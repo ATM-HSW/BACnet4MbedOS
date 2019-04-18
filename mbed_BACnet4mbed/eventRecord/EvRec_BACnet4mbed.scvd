@@ -1,0 +1,848 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<component_viewer schemaVersion="0.1" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="Component_Viewer.xsd">
+  <component name="BACnet4mbed" version="0.0.1"/>
+  
+  <!-- Typedefinitions for BACnet4mbed --> 
+  <typedefs>
+  
+	<typedef name="BOOL"	size="1"	info="Boolean">
+	  <member name="boolean"	type="uint8_t"	offset="0"	info="Boolean">
+	    <enum name="FALSE"	value="0x00"	info="False"/>
+	    <enum name="TRUE"	value="0x01"	info="True"/>		
+	  </member>
+	</typedef>
+  
+	<typedef name="CMSIS_OS"	size="4"	info="MpBus ErrorCode SAM">
+	  <member name="osStatus"	type="int32_t"	offset="0"	info="SAM ErrorCode">
+	    <enum name="osOK"									value="0x00"		info="Function completed; no error or event occurred."/>
+	    <enum name="osEventSignal"							value="0x08"		info="Function completed; signal event occurred."/>
+	    <enum name="osEventMessage"							value="0x10"		info="Function completed; message event occurred."/>
+	    <enum name="osEventMail"							value="0x20"		info="Function completed; mail event occurred."/>
+	    <enum name="osEventTimeout"							value="0x40"		info="Function completed; timeout occurred."/>
+	    <enum name="osErrorParameter"						value="0x80"		info="Parameter error: a mandatory parameter was missing or specified an incorrect object."/>
+	    <enum name="osErrorResource"						value="0x81"		info="Resource not available: a specified resource was not available."/>
+	    <enum name="osErrorTimeoutResource"					value="0xC1"		info="Resource not available within given time: a specified resource was not available within the timeout period."/>
+	    <enum name="osErrorISR"								value="0x82"		info="Not allowed in ISR context: the function cannot be called from interrupt service routines."/>
+	    <enum name="osErrorISRRecursive"					value="0x83"		info="Function called multiple times from ISR with same object."/>
+	    <enum name="osErrorPriority"						value="0x84"		info="System cannot determine priority or thread has illegal priority."/>
+	    <enum name="osErrorNoMemory"						value="0x85"		info="System is out of memory: it was impossible to allocate or reserve memory for the operation."/>
+	    <enum name="osErrorValue"							value="0x86"		info="Value of a parameter is out of range."/>
+	    <enum name="osErrorOS"								value="0xFF"		info="Unspecified RTOS error: run-time error but no other error message fits."/>
+	    <enum name="osStatusReserved"						value="0x7FFFFFFF"	info="Prevents enum down-size compiler optimization."/>
+	  </member>
+	</typedef>
+	
+	<typedef name="BACNET_PDU_TYPE"	size="4" 	info="PDU Type Enumerations">
+	  <member name="pduType"	type="int32_t"	offset="0"	info="PDU Typedefinitions">
+		<enum name="PDU_TYPE_CONFIRMED_SERVICE_REQUEST"		value="0x00"		info="Confirmed Service Request"/>
+		<enum name="PDU_TYPE_UNCONFIRMED_SERVICE_REQUEST"	value="0x10"		info="Unconfirmed Service Request"/>
+		<enum name="PDU_TYPE_SIMPLE_ACK"					value="0x20"		info="Simple ACK"/>
+		<enum name="PDU_TYPE_COMPLEX_ACK"					value="0x30"		info="Complex ACK"/>
+		<enum name="PDU_TYPE_SEGMENT_ACK"					value="0x40"		info="Segment ACK"/>
+		<enum name="PDU_TYPE_ERROR"							value="0x50"		info="Error"/>
+		<enum name="PDU_TYPE_REJECT"						value="0x60"		info="Reject"/>
+		<enum name="PDU_TYPE_ABORT"							value="0x70"		info="Abort"/>
+	  </member>
+	</typedef>
+	
+	<typedef name="BACNET_CONFIRMED_SERVICE"	size="4"	info="BACnet confirmed Service Type">
+	  <member name="cServType"	type="int32_t"	offset="0"	info="BACnet confirmed Service Types">
+		<enum name="SERVICE_CONFIRMED_ACKNOWLEDGE_ALARM"				value="0"	info="ACKNOWLEDGE_ALARM"/>
+		<enum name="SERVICE_CONFIRMED_COV_NOTIFICATION"					value="1"	info="COV_NOTIFICATION"/>
+		<enum name="SERVICE_CONFIRMED_EVENT_NOTIFICATION"				value="2"	info="EVENT_NOTIFICATION"/>
+		<enum name="SERVICE_CONFIRMED_GET_ALARM_SUMMARY"				value="3"	info="GET_ALARM_SUMMARY"/>
+		<enum name="SERVICE_CONFIRMED_GET_ENROLLMENT_SUMMARY"			value="4"	info="GET_ENROLLMENT_SUMMARY"/>
+		<enum name="SERVICE_CONFIRMED_SUBSCRIBE_COV"					value="5"	info="SUBSCRIBE_COV"/>
+		<enum name="SERVICE_CONFIRMED_ATOMIC_READ_FILE"					value="6"	info="ATOMIC_READ_F"/>
+		<enum name="SERVICE_CONFIRMED_ATOMIC_WRITE_FILE"				value="7"	info="ATOMIC_WRITE_"/>
+		<enum name="SERVICE_CONFIRMED_ADD_LIST_ELEMENT"					value="8"	info="ADD_LIST_ELEM"/>
+		<enum name="SERVICE_CONFIRMED_REMOVE_LIST_ELEMENT"				value="9"	info="REMOVE_LIST_E"/>
+		<enum name="SERVICE_CONFIRMED_CREATE_OBJECT"					value="10"	info="CREATE_OBJECT"/>
+		<enum name="SERVICE_CONFIRMED_DELETE_OBJECT"					value="11"	info="DELETE_OBJECT"/>
+		<enum name="SERVICE_CONFIRMED_READ_PROPERTY"					value="12"	info="READ_PROPERTY"/>
+		<enum name="SERVICE_CONFIRMED_READ_PROP_CONDITIONAL"			value="13"	info="READ_PROP_CON"/>
+		<enum name="SERVICE_CONFIRMED_READ_PROP_MULTIPLE"				value="14"	info="READ_PROP_MUL"/>
+		<enum name="SERVICE_CONFIRMED_WRITE_PROPERTY"					value="15"	info="WRITE_PROPERT"/>
+		<enum name="SERVICE_CONFIRMED_WRITE_PROP_MULTIPLE"				value="16"	info="WRITE_PROP_MU"/>
+		<enum name="SERVICE_CONFIRMED_DEVICE_COMMUNICATION_CONTROL"		value="17"	info="DEVICE_COMMUN"/>
+		<enum name="SERVICE_CONFIRMED_PRIVATE_TRANSFER"					value="18"	info="PRIVATE_TRANS"/>
+		<enum name="SERVICE_CONFIRMED_TEXT_MESSAGE"						value="19"	info="TEXT_MESSAGE"/>
+		<enum name="SERVICE_CONFIRMED_REINITIALIZE_DEVICE"				value="20"	info="REINITIALIZE_"/>
+		<enum name="SERVICE_CONFIRMED_VT_OPEN"							value="21"	info="VT_OPEN"/>
+		<enum name="SERVICE_CONFIRMED_VT_CLOSE"							value="22"	info="VT_CLOSE"/>
+		<enum name="SERVICE_CONFIRMED_VT_DATA"							value="23"	info="VT_DATA"/>
+		<enum name="SERVICE_CONFIRMED_AUTHENTICATE"						value="24"	info="AUTHENTICATE"/>
+		<enum name="SERVICE_CONFIRMED_REQUEST_KEY"						value="25"	info="REQUEST_KEY"/>
+		<enum name="SERVICE_CONFIRMED_READ_RANGE"						value="26"	info="READ_RANGE"/>
+		<enum name="SERVICE_CONFIRMED_LIFE_SAFETY_OPERATION"			value="27"	info="LIFE_SAFETY_OPERATION"/>
+		<enum name="SERVICE_CONFIRMED_SUBSCRIBE_COV_PROPERTY"			value="28"	info="SUBSCRIBE_COV_PROPERTY"/>
+		<enum name="SERVICE_CONFIRMED_GET_EVENT_INFORMATION"			value="29"	info="GET_EVENT_INFORMATION"/>
+		<enum name="MAX_BACNET_CONFIRMED_SERVICE"						value="30"	info="ED_SERVICE"/>
+	  </member>
+	</typedef>
+	
+	<typedef name="BACNET_ABORT_REASON"	size="4"	info="BACnet Abortreason Enumerations">
+	  <member name="reason"		type="int32_t"	offset="0"	info="Abortreason Enumerations">
+		<enum name="ABORT_REASON_OTHER"									value="0"		info="OTHER"/>
+		<enum name="ABORT_REASON_BUFFER_OVERFLOW"						value="1"		info="BUFFER_OVERFLOW"/>
+		<enum name="ABORT_REASON_INVALID_APDU_IN_THIS_STATE"			value="2"		info="INVALID_APDU_IN_THIS_STATE"/>
+		<enum name="ABORT_REASON_PREEMPTED_BY_HIGHER_PRIORITY_TASK"		value="3"		info="PREEMPTED_BY_HIGHER_PRIORITY_TASK"/>
+		<enum name="ABORT_REASON_SEGMENTATION_NOT_SUPPORTED"			value="4"		info="SEGMENTATION_NOT_SUPPORTED"/>
+		<enum name="MAX_BACNET_ABORT_REASON"							value="5"		info="MAX_BACNET_ABORT_REASON"/>
+		<enum name="FIRST_PROPRIETARY_ABORT_REASON"						value="64"		info="FIRST_PROPRIETARY_ABORT_REASON"/>
+		<enum name="LAST_PROPRIETARY_ABORT_REASON"						value="65535"	info="LAST_PROPRIETARY_ABORT_REASON"/>
+	  </member>
+	</typedef>
+	
+	<typedef name="BACNET_ERROR_CODE"	size="4"	info="BACnet Error Codes">
+	  <member name="errCode"	type="int32_t"	offset="0"	info="BACnet Error Codes">
+		<enum name="ERROR_CODE_OTHER"									value="0"		info="OTHER"/>
+		<enum name="ERROR_CODE_AUTHENTICATION_FAILED"					value="1"		info="AUTHENTICATION_FAILED"/>
+		<enum name="ERROR_CODE_CONFIGURATION_IN_PROGRESS"				value="2"		info="CONFIGURATION_IN_PROGRESS"/>
+		<enum name="ERROR_CODE_DEVICE_BUSY"								value="3"		info="DEVICE_BUSY"/>
+		<enum name="ERROR_CODE_DYNAMIC_CREATION_NOT_SUPPORTED"			value="4"		info="DYNAMIC_CREATION_NOT_SUPPORTED"/>
+		<enum name="ERROR_CODE_FILE_ACCESS_DENIED"						value="5"		info="FILE_ACCESS_DENIED"/>
+		<enum name="ERROR_CODE_INCOMPATIBLE_SECURITY_LEVELS"			value="6"		info="INCOMPATIBLE_SECURITY_LEVELS"/>
+		<enum name="ERROR_CODE_INCONSISTENT_PARAMETERS"					value="7"		info="INCONSISTENT_PARAMETERS"/>			
+		<enum name="ERROR_CODE_INCONSISTENT_SELECTION_CRITERION"		value="8"		info="INCONSISTENT_SELECTION_CRITERION"/>
+		<enum name="ERROR_CODE_INVALID_DATA_TYPE"						value="9"		info="INVALID_DATA_TYPE"/>
+		<enum name="ERROR_CODE_INVALID_FILE_ACCESS_METHOD"				value="10"		info="INVALID_FILE_ACCESS_METHOD"/>
+		<enum name="ERROR_CODE_INVALID_FILE_START_POSITION"				value="11"		info="INVALID_FILE_START_POSITION"/>
+		<enum name="ERROR_CODE_INVALID_OPERATOR_NAME"					value="12"		info="INVALID_OPERATOR_NAME"/>
+		<enum name="ERROR_CODE_INVALID_PARAMETER_DATA_TYPE"				value="13"		info="INVALID_PARAMETER_DATA_TYPE"/>
+		<enum name="ERROR_CODE_INVALID_TIME_STAMP"						value="14"		info="INVALID_TIME_STAMP"/>
+		<enum name="ERROR_CODE_KEY_GENERATION_ERROR"					value="15"		info="KEY_GENERATION_ERROR"/>
+		<enum name="ERROR_CODE_MISSING_REQUIRED_PARAMETER"				value="16"		info="MISSING_REQUIRED_PARAMETER"/>			
+		<enum name="ERROR_CODE_NO_OBJECTS_OF_SPECIFIED_TYPE"			value="17"		info="NO_OBJECTS_OF_SPECIFIED_TYPE"/>
+		<enum name="ERROR_CODE_NO_SPACE_FOR_OBJECT"						value="18"		info="NO_SPACE_FOR_OBJECT"/>
+		<enum name="ERROR_CODE_NO_SPACE_TO_ADD_LIST_ELEMENT"			value="19"		info="NO_SPACE_TO_ADD_LIST_ELEMENT"/>
+		<enum name="ERROR_CODE_NO_SPACE_TO_WRITE_PROPERTY"				value="20"		info="NO_SPACE_TO_WRITE_PROPERTY"/>
+		<enum name="ERROR_CODE_NO_VT_SESSIONS_AVAILABLE"				value="21"		info="NO_VT_SESSIONS_AVAILABLE"/>
+		<enum name="ERROR_CODE_PROPERTY_IS_NOT_A_LIST"					value="22"		info="PROPERTY_IS_NOT_A_LIST"/>
+		<enum name="ERROR_CODE_OBJECT_DELETION_NOT_PERMITTED"			value="23"		info="OBJECT_DELETION_NOT_PERMITTED"/>
+		<enum name="ERROR_CODE_OBJECT_IDENTIFIER_ALREADY_EXISTS"		value="24"		info="OBJECT_IDENTIFIER_ALREADY_EXISTS"/>
+		<enum name="ERROR_CODE_OPERATIONAL_PROBLEM"						value="25"		info="OPERATIONAL_PROBLEM"/>
+		<enum name="ERROR_CODE_PASSWORD_FAILURE"						value="26"		info="PASSWORD_FAILURE"/>
+		<enum name="ERROR_CODE_READ_ACCESS_DENIED"						value="27"		info="READ_ACCESS_DENIED"/>
+		<enum name="ERROR_CODE_SECURITY_NOT_SUPPORTED"					value="28"		info="SECURITY_NOT_SUPPORTED"/>
+		<enum name="ERROR_CODE_SERVICE_REQUEST_DENIED"					value="29"		info="SERVICE_REQUEST_DENIED"/>
+		<enum name="ERROR_CODE_TIMEOUT"									value="30"		info="TIMEOUT"/>
+		<enum name="ERROR_CODE_UNKNOWN_OBJECT"							value="31"		info="UNKNOWN_OBJECT"/>
+		<enum name="ERROR_CODE_UNKNOWN_PROPERTY"						value="32"		info="UNKNOWN_PROPERTY"/>
+		<enum name="ERROR_CODE_RESERVED1"								value="33"		info="RESERVED1"/>
+		<enum name="ERROR_CODE_UNKNOWN_VT_CLASS"						value="34"		info="UNKNOWN_VT_CLASS"/>
+		<enum name="ERROR_CODE_UNKNOWN_VT_SESSION"						value="35"		info="UNKNOWN_VT_SESSION"/>
+		<enum name="ERROR_CODE_UNSUPPORTED_OBJECT_TYPE"					value="36"		info="UNSUPPORTED_OBJECT_TYPE"/>
+		<enum name="ERROR_CODE_VALUE_OUT_OF_RANGE"						value="37"		info="VALUE_OUT_OF_RANGE"/>
+		<enum name="ERROR_CODE_VT_SESSION_ALREADY_CLOSED"				value="38"		info="VT_SESSION_ALREADY_CLOSED"/>
+		<enum name="ERROR_CODE_VT_SESSION_TERMINATION_FAILURE"			value="39"		info="VT_SESSION_TERMINATION_FAILURE"/>
+		<enum name="ERROR_CODE_WRITE_ACCESS_DENIED"						value="40"		info="WRITE_ACCESS_DENIED"/>
+		<enum name="ERROR_CODE_CHARACTER_SET_NOT_SUPPORTED"				value="41"		info="CHARACTER_SET_NOT_SUPPORTED"/>
+		<enum name="ERROR_CODE_INVALID_ARRAY_INDEX"						value="42"		info="INVALID_ARRAY_INDEX"/>
+		<enum name="ERROR_CODE_COV_SUBSCRIPTION_FAILED"					value="43"		info="COV_SUBSCRIPTION_FAILED"/>
+		<enum name="ERROR_CODE_NOT_COV_PROPERTY"						value="44"		info="NOT_COV_PROPERTY"/>
+		<enum name="ERROR_CODE_OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED"	value="45"		info="OPTIONAL_FUNCTIONALITY_NOT_SUPPORTED"/>
+		<enum name="ERROR_CODE_INVALID_CONFIGURATION_DATA"				value="46"		info="INVALID_CONFIGURATION_DATA"/>
+		<enum name="ERROR_CODE_DATATYPE_NOT_SUPPORTED"					value="47"		info="DATATYPE_NOT_SUPPORTED"/>			
+		<enum name="ERROR_CODE_DUPLICATE_NAME"							value="48"		info="DUPLICATE_NAME"/>
+		<enum name="ERROR_CODE_DUPLICATE_OBJECT_ID"						value="49"		info="DUPLICATE_OBJECT_ID"/>
+		<enum name="ERROR_CODE_PROPERTY_IS_NOT_AN_ARRAY"				value="50"		info="PROPERTY_IS_NOT_AN_ARRAY"/>
+		<enum name="ERROR_CODE_ABORT_BUFFER_OVERFLOW"					value="51"		info="ABORT_BUFFER_OVERFLOW"/>
+		<enum name="ERROR_CODE_ABORT_INVALID_APDU_IN_THIS_STATE"		value="52"		info="ABORT_INVALID_APDU_IN_THIS_STATE"/>
+		<enum name="ERROR_CODE_ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK"	value="53"		info="ABORT_PREEMPTED_BY_HIGHER_PRIORITY_TASK"/>
+		<enum name="ERROR_CODE_ABORT_SEGMENTATION_NOT_SUPPORTED"		value="54"		info="ABORT_SEGMENTATION_NOT_SUPPORTED"/>
+		<enum name="ERROR_CODE_ABORT_PROPRIETARY"						value="55"		info="ABORT_PROPRIETARY"/>
+		<enum name="ERROR_CODE_ABORT_OTHER"								value="56"		info="ABORT_OTHER"/>
+		<enum name="ERROR_CODE_INVALID_TAG"								value="57"		info="INVALID_TAG"/>
+		<enum name="ERROR_CODE_NETWORK_DOWN"							value="58"		info="NETWORK_DOWN"/>
+		<enum name="ERROR_CODE_REJECT_BUFFER_OVERFLOW"					value="59"		info="REJECT_BUFFER_OVERFLOW"/>
+		<enum name="ERROR_CODE_REJECT_INCONSISTENT_PARAMETERS"			value="60"		info="REJECT_INCONSISTENT_PARAMETERS"/>
+		<enum name="ERROR_CODE_REJECT_INVALID_PARAMETER_DATA_TYPE"		value="61"		info="REJECT_INVALID_PARAMETER_DATA_TYPE"/>
+		<enum name="ERROR_CODE_REJECT_INVALID_TAG"						value="62"		info="REJECT_INVALID_TAG"/>
+		<enum name="ERROR_CODE_REJECT_MISSING_REQUIRED_PARAMETER"		value="63"		info="REJECT_MISSING_REQUIRED_PARAMETER"/>
+		<enum name="ERROR_CODE_REJECT_PARAMETER_OUT_OF_RANGE"			value="64"		info="REJECT_PARAMETER_OUT_OF_RANGE"/>
+		<enum name="ERROR_CODE_REJECT_TOO_MANY_ARGUMENTS"				value="65"		info="REJECT_TOO_MANY_ARGUMENTS"/>
+		<enum name="ERROR_CODE_REJECT_UNDEFINED_ENUMERATION"			value="66"		info="REJECT_UNDEFINED_ENUMERATION"/>
+		<enum name="ERROR_CODE_REJECT_UNRECOGNIZED_SERVICE"				value="67"		info="REJECT_UNRECOGNIZED_SERVICE"/>
+		<enum name="ERROR_CODE_REJECT_PROPRIETARY"						value="68"		info="REJECT_UNRECOGNIZED_SERVICE"/>
+		<enum name="ERROR_CODE_REJECT_OTHER"							value="69"		info="REJECT_OTHER"/>
+		<enum name="ERROR_CODE_UNKNOWN_DEVICE"							value="70"		info="UNKNOWN_DEVICE"/>
+		<enum name="ERROR_CODE_UNKNOWN_ROUTE"							value="71"		info="UNKNOWN_ROUTE"/>
+		<enum name="ERROR_CODE_VALUE_NOT_INITIALIZED"					value="72"		info="VALUE_NOT_INITIALIZED"/>
+		<enum name="ERROR_CODE_INVALID_EVENT_STATE"						value="73"		info="INVALID_EVENT_STATE"/>
+		<enum name="ERROR_CODE_NO_ALARM_CONFIGURED"						value="74"		info="NO_ALARM_CONFIGURED"/>
+		<enum name="ERROR_CODE_LOG_BUFFER_FULL"							value="75"		info="LOG_BUFFER_FULL"/>
+		<enum name="ERROR_CODE_LOGGED_VALUE_PURGED"						value="76"		info="LOGGED_VALUE_PURGED"/>
+		<enum name="ERROR_CODE_NO_PROPERTY_SPECIFIED"					value="77"		info="NO_PROPERTY_SPECIFIED"/>
+		<enum name="ERROR_CODE_NOT_CONFIGURED_FOR_TRIGGERED_LOGGING"	value="78"		info="NOT_CONFIGURED_FOR_TRIGGERED_LOGGING"/>
+		<enum name="ERROR_CODE_UNKNOWN_SUBSCRIPTION"					value="79"		info="UNKNOWN_SUBSCRIPTION"/>
+		<enum name="ERROR_CODE_PARAMETER_OUT_OF_RANGE"					value="80"		info="PARAMETER_OUT_OF_RANGE"/>
+		<enum name="ERROR_CODE_LIST_ELEMENT_NOT_FOUND"					value="81"		info="LIST_ELEMENT_NOT_FOUND"/>
+		<enum name="ERROR_CODE_BUSY"									value="82"		info="BUSY"/>
+		<enum name="ERROR_CODE_COMMUNICATION_DISABLED"					value="83"		info="COMMUNICATION_DISABLED"/>
+		<enum name="ERROR_CODE_SUCCESS"									value="84"		info="SUCCESS"/>
+		<enum name="ERROR_CODE_ACCESS_DENIED"							value="85"		info="ACCESS_DENIED"/>
+		<enum name="ERROR_CODE_BAD_DESTINATION_ADDRESS"					value="86"		info="BAD_DESTINATION_ADDRESS"/>
+		<enum name="ERROR_CODE_BAD_DESTINATION_DEVICE_ID"				value="87"		info="BAD_DESTINATION_DEVICE_ID"/>
+		<enum name="ERROR_CODE_BAD_SIGNATURE"							value="88"		info="BAD_SIGNATURE"/>
+		<enum name="ERROR_CODE_BAD_SOURCE_ADDRESS"						value="89"		info="BAD_SOURCE_ADDRESS"/>
+		<enum name="ERROR_CODE_BAD_TIMESTAMP"							value="90"		info="BAD_TIMESTAMP"/>
+		<enum name="ERROR_CODE_CANNOT_USE_KEY"							value="91"		info="CANNOT_USE_KEY"/>
+		<enum name="ERROR_CODE_CANNOT_VERIFY_MESSAGE_ID"				value="92"		info="CANNOT_VERIFY_MESSAGE_ID"/>
+		<enum name="ERROR_CODE_CORRECT_KEY_REVISION"					value="93"		info="CORRECT_KEY_REVISION"/>
+		<enum name="ERROR_CODE_DESTINATION_DEVICE_ID_REQUIRED"			value="94"		info="DESTINATION_DEVICE_ID_REQUIRED"/>
+		<enum name="ERROR_CODE_DUPLICATE_MESSAGE"						value="95"		info="DUPLICATE_MESSAGE"/>
+		<enum name="ERROR_CODE_ENCRYPTION_NOT_CONFIGURED"				value="96"		info="ENCRYPTION_NOT_CONFIGURED"/>
+		<enum name="ERROR_CODE_ENCRYPTION_REQUIRED"						value="97"		info="ENCRYPTION_REQUIRED"/>
+		<enum name="ERROR_CODE_INCORRECT_KEY"							value="98"		info="INCORRECT_KEY"/>
+		<enum name="ERROR_CODE_INVALID_KEY_DATA"						value="99"		info="INVALID_KEY_DATA"/>
+		<enum name="ERROR_CODE_KEY_UPDATE_IN_PROGRESS"					value="100"		info="KEY_UPDATE_IN_PROGRESS"/>
+		<enum name="ERROR_CODE_MALFORMED_MESSAGE"						value="101"		info="MALFORMED_MESSAGE"/>
+		<enum name="ERROR_CODE_NOT_KEY_SERVER"							value="102"		info="NOT_KEY_SERVER"/>
+		<enum name="ERROR_CODE_SECURITY_NOT_CONFIGURED"					value="103"		info="SECURITY_NOT_CONFIGURED"/>
+		<enum name="ERROR_CODE_SOURCE_SECURITY_REQUIRED"				value="104"		info="SOURCE_SECURITY_REQUIRED"/>
+		<enum name="ERROR_CODE_TOO_MANY_KEYS"							value="105"		info="TOO_MANY_KEYS"/>
+		<enum name="ERROR_CODE_UNKNOWN_AUTHENTICATION_TYPE"				value="106"		info="UNKNOWN_AUTHENTICATION_TYPE"/>
+		<enum name="ERROR_CODE_UNKNOWN_KEY"								value="107"		info="UNKNOWN_KEY"/>
+		<enum name="ERROR_CODE_UNKNOWN_KEY_REVISION"					value="108"		info="UNKNOWN_KEY_REVISION"/>
+		<enum name="ERROR_CODE_UNKNOWN_SOURCE_MESSAGE"					value="109"		info="UNKNOWN_SOURCE_MESSAGE"/>
+		<enum name="ERROR_CODE_NOT_ROUTER_TO_DNET"						value="110"		info="NOT_ROUTER_TO_DNET"/>
+		<enum name="ERROR_CODE_ROUTER_BUSY"								value="111"		info="ROUTER_BUSY"/>
+		<enum name="ERROR_CODE_UNKNOWN_NETWORK_MESSAGE"					value="112"		info="UNKNOWN_NETWORK_MESSAGE"/>
+		<enum name="ERROR_CODE_MESSAGE_TOO_LONG"						value="113"		info="MESSAGE_TOO_LONG"/>
+		<enum name="ERROR_CODE_SECURITY_ERROR"							value="114"		info="SECURITY_ERROR"/>
+		<enum name="ERROR_CODE_ADDRESSING_ERROR"						value="115"		info="ADDRESSING_ERROR"/>
+		<enum name="ERROR_CODE_WRITE_BDT_FAILED"						value="116"		info="WRITE_BDT_FAILED"/>
+		<enum name="ERROR_CODE_READ_BDT_FAILED"							value="117"		info="READ_BDT_FAILED"/>
+		<enum name="ERROR_CODE_REGISTER_FOREIGN_DEVICE_FAILED"			value="118"		info="REGISTER_FOREIGN_DEVICE_FAILED"/>
+		<enum name="ERROR_CODE_READ_FDT_FAILED"							value="119"		info="READ_FDT_FAILED"/>
+		<enum name="ERROR_CODE_DELETE_FDT_ENTRY_FAILED"					value="120"		info="DELETE_FDT_ENTRY_FAILED"/>
+		<enum name="ERROR_CODE_DISTRIBUTE_BROADCAST_FAILED"				value="121"		info="DISTRIBUTE_BROADCAST_FAILED"/>
+		<enum name="ERROR_CODE_UNKNOWN_FILE_SIZE"						value="122"		info="UNKNOWN_FILE_SIZE"/>
+		<enum name="ERROR_CODE_ABORT_APDU_TOO_LONG"						value="123"		info="ABORT_APDU_TOO_LONG"/>
+		<enum name="ERROR_CODE_ABORT_APPLICATION_EXCEEDED_REPLY_TIME"	value="124"		info="ABORT_APPLICATION_EXCEEDED_REPLY_TIME"/>
+		<enum name="ERROR_CODE_ABORT_OUT_OF_RESOURCES"					value="125"		info="ABORT_OUT_OF_RESOURCES"/>
+		<enum name="ERROR_CODE_ABORT_TSM_TIMEOUT"						value="126"		info="ABORT_TSM_TIMEOUT"/>
+		<enum name="ERROR_CODE_ABORT_WINDOW_SIZE_OUT_OF_RANGE"			value="127"		info="ABORT_WINDOW_SIZE_OUT_OF_RANGE"/>
+		<enum name="ERROR_CODE_FILE_FULL"								value="128"		info="FILE_FULL"/>
+		<enum name="ERROR_CODE_INCONSISTENT_CONFIGURATION"				value="129"		info="INCONSISTENT_CONFIGURATION"/>
+		<enum name="ERROR_CODE_INCONSISTENT_OBJECT_TYPE"				value="130"		info="INCONSISTENT_OBJECT_TYPE"/>
+		<enum name="ERROR_CODE_INTERNAL_ERROR"							value="131"		info="INTERNAL_ERROR"/>
+		<enum name="ERROR_CODE_NOT_CONFIGURED"							value="132"		info="NOT_CONFIGURED"/>
+		<enum name="ERROR_CODE_OUT_OF_MEMORY"							value="133"		info="OUT_OF_MEMORY"/>
+		<enum name="ERROR_CODE_VALUE_TOO_LONG"							value="134"		info="VALUE_TOO_LONG"/>
+		<enum name="ERROR_CODE_ABORT_INSUFFICIENT_SECURITY"				value="135"		info="ABORT_INSUFFICIENT_SECURITY"/>
+		<enum name="ERROR_CODE_ABORT_SECURITY_ERROR"					value="136"		info="ABORT_SECURITY_ERROR"/>
+		<enum name="MAX_BACNET_ERROR_CODE"								value="137"		info="MAX_BACNET_ERROR_CODE"/>
+		<enum name="FIRST_PROPRIETARY_ERROR_CODE"						value="256"		info="FIRST_PROPRIETARY_ERROR_CODE"/>
+		<enum name="LAST_PROPRIETARY_ERROR_CODE"						value="65535"	info="LAST_PROPRIETARY_ERROR_CODE"/>
+	  </member>
+	</typedef>
+	
+	<typedef name="BACNET_OBJ_PROP"		size="4"	info="BACnet ObjectProperty Enumeration">
+	  <member name="propCode"	type="int32_t"	offset="0"	info="ObjectProp Enum">
+	    <enum name="PROP_ACKED_TRANSITIONS"								value="0" 		info="PROP_ACKED_TRANSITIONS"/>
+		<enum name="PROP_ACK_REQUIRED"						 			value="1" 		info="PROP_ACK_REQUIRED"/>
+		<enum name="PROP_ACTION"						 				value="2" 		info="PROP_ACTION"/>
+		<enum name="PROP_ACTION_TEXT"						 			value="3" 		info="PROP_ACTION_TEXT"/>
+		<enum name="PROP_ACTIVE_TEXT"						 			value="4" 		info="PROP_ACTIVE_TEXT"/>
+		<enum name="PROP_ACTIVE_VT_SESSIONS"							value="5" 		info="PROP_ACTIVE_VT_SESSIONS"/>
+		<enum name="PROP_ALARM_VALUE"						 			value="6" 		info="PROP_ALARM_VALUE"/>
+		<enum name="PROP_ALARM_VALUES"						 			value="7" 		info="PROP_ALARM_VALUES"/>
+		<enum name="PROP_ALL"						 					value="8" 		info="PROP_ALL"/>
+		<enum name="PROP_ALL_WRITES_SUCCESSFUL"							value="9" 		info="PROP_ALL_WRITES_SUCCESSFUL"/>
+		<enum name="PROP_APDU_SEGMENT_TIMEOUT"							value="10" 		info="PROP_APDU_SEGMENT_TIMEOUT"/>
+		<enum name="PROP_APDU_TIMEOUT"						 			value="11" 		info="PROP_APDU_TIMEOUT"/>
+		<enum name="PROP_APPLICATION_SOFTWARE_VERSION"					value="12" 		info="PROP_APPLICATION_SOFTWARE_VERSION"/>
+		<enum name="PROP_ARCHIVE"						 				value="13" 		info="PROP_ARCHIVE"/>
+		<enum name="PROP_BIAS"						 					value="14" 		info="PROP_BIAS"/>
+		<enum name="PROP_CHANGE_OF_STATE_COUNT"							value="15" 		info="PROP_CHANGE_OF_STATE_COUNT"/>
+		<enum name="PROP_CHANGE_OF_STATE_TIME"							value="16" 		info="PROP_CHANGE_OF_STATE_TIME"/>
+		<enum name="PROP_NOTIFICATION_CLASS"							value="17" 		info="PROP_NOTIFICATION_CLASS"/>
+		<enum name="PROP_BLANK_1"						 				value="18" 		info="PROP_BLANK_1"/>
+		<enum name="PROP_CONTROLLED_VARIABLE_REFERENCE"					value="19" 		info="PROP_CONTROLLED_VARIABLE_REFERENCE"/>
+		<enum name="PROP_CONTROLLED_VARIABLE_UNITS"						value="20" 		info="PROP_CONTROLLED_VARIABLE_UNITS"/>
+		<enum name="PROP_CONTROLLED_VARIABLE_VALUE"						value="21" 		info="PROP_CONTROLLED_VARIABLE_VALUE"/>
+		<enum name="PROP_COV_INCREMENT"						 			value="22" 		info="PROP_COV_INCREMENT"/>
+		<enum name="PROP_DATE_LIST"						 				value="23" 		info="PROP_DATE_LIST"/>
+		<enum name="PROP_DAYLIGHT_SAVINGS_STATUS"						value="24" 		info="PROP_DAYLIGHT_SAVINGS_STATUS"/>
+		<enum name="PROP_DEADBAND"						 				value="25" 		info="PROP_DEADBAND"/>
+		<enum name="PROP_DERIVATIVE_CONSTANT"							value="26" 		info="PROP_DERIVATIVE_CONSTANT"/>
+		<enum name="PROP_DERIVATIVE_CONSTANT_UNITS"						value="27" 		info="PROP_DERIVATIVE_CONSTANT_UNITS"/>
+		<enum name="PROP_DESCRIPTION"						 			value="28" 		info="PROP_DESCRIPTION"/>
+		<enum name="PROP_DESCRIPTION_OF_HALT"							value="29" 		info="PROP_DESCRIPTION_OF_HALT"/>
+		<enum name="PROP_DEVICE_ADDRESS_BINDING"						value="30" 		info="PROP_DEVICE_ADDRESS_BINDING"/>
+		<enum name="PROP_DEVICE_TYPE"						 			value="31" 		info="PROP_DEVICE_TYPE"/>
+		<enum name="PROP_EFFECTIVE_PERIOD"								value="32" 		info="PROP_EFFECTIVE_PERIOD"/>
+		<enum name="PROP_ELAPSED_ACTIVE_TIME"							value="33" 		info="PROP_ELAPSED_ACTIVE_TIME"/>
+		<enum name="PROP_ERROR_LIMIT"						 			value="34" 		info="PROP_ERROR_LIMIT"/>
+		<enum name="PROP_EVENT_ENABLE"						 			value="35" 		info="PROP_EVENT_ENABLE"/>
+		<enum name="PROP_EVENT_STATE"						 			value="36" 		info="PROP_EVENT_STATE"/>
+		<enum name="PROP_EVENT_TYPE"						 			value="37" 		info="PROP_EVENT_TYPE"/>
+		<enum name="PROP_EXCEPTION_SCHEDULE"							value="38" 		info="PROP_EXCEPTION_SCHEDULE"/>
+		<enum name="PROP_FAULT_VALUES"						 			value="39" 		info="PROP_FAULT_VALUES"/>
+		<enum name="PROP_FEEDBACK_VALUE"								value="40" 		info="PROP_FEEDBACK_VALUE"/>
+		<enum name="PROP_FILE_ACCESS_METHOD"							value="41" 		info="PROP_FILE_ACCESS_METHOD"/>
+		<enum name="PROP_FILE_SIZE"						 				value="42" 		info="PROP_FILE_SIZE"/>
+		<enum name="PROP_FILE_TYPE"						 				value="43" 		info="PROP_FILE_TYPE"/>
+		<enum name="PROP_FIRMWARE_REVISION"								value="44" 		info="PROP_FIRMWARE_REVISION"/>
+		<enum name="PROP_HIGH_LIMIT"						 			value="45" 		info="PROP_HIGH_LIMIT"/>
+		<enum name="PROP_INACTIVE_TEXT"						 			value="46" 		info="PROP_INACTIVE_TEXT"/>
+		<enum name="PROP_IN_PROCESS"						 			value="47" 		info="PROP_IN_PROCESS"/>
+		<enum name="PROP_INSTANCE_OF"						 			value="48" 		info="PROP_INSTANCE_OF"/>
+		<enum name="PROP_INTEGRAL_CONSTANT"								value="49" 		info="PROP_INTEGRAL_CONSTANT"/>
+		<enum name="PROP_INTEGRAL_CONSTANT_UNITS"						value="50" 		info="PROP_INTEGRAL_CONSTANT_UNITS"/>
+		<enum name="PROP_ISSUE_CONFIRMED_NOTIFICATIONS"					value="51" 		info="PROP_ISSUE_CONFIRMED_NOTIFICATIONS"/>
+		<enum name="PROP_LIMIT_ENABLE"						 			value="52" 		info="PROP_LIMIT_ENABLE"/>
+		<enum name="PROP_LIST_OF_GROUP_MEMBERS"							value="53" 		info="PROP_LIST_OF_GROUP_MEMBERS"/>
+		<enum name="PROP_LIST_OF_OBJECT_PROPERTY_REFERENCES"			value="54" 		info="PROP_LIST_OF_OBJECT_PROPERTY_REFERENCES"/>
+		<enum name="PROP_LIST_OF_SESSION_KEYS"							value="55" 		info="PROP_LIST_OF_SESSION_KEYS"/>
+		<enum name="PROP_LOCAL_DATE"						 			value="56" 		info="PROP_LOCAL_DATE"/>
+		<enum name="PROP_LOCAL_TIME"						 			value="57" 		info="PROP_LOCAL_TIME"/>
+		<enum name="PROP_LOCATION"						 				value="58" 		info="PROP_LOCATION"/>
+		<enum name="PROP_LOW_LIMIT"						 				value="59" 		info="PROP_LOW_LIMIT"/>
+		<enum name="PROP_MANIPULATED_VARIABLE_REFERENCE"				value="60" 		info="PROP_MANIPULATED_VARIABLE_REFERENCE"/>
+		<enum name="PROP_MAXIMUM_OUTPUT"								value="61" 		info="PROP_MAXIMUM_OUTPUT"/>
+		<enum name="PROP_MAX_APDU_LENGTH_ACCEPTED"						value="62" 		info="PROP_MAX_APDU_LENGTH_ACCEPTED"/>
+		<enum name="PROP_MAX_INFO_FRAMES"								value="63" 		info="PROP_MAX_INFO_FRAMES"/>
+		<enum name="PROP_MAX_MASTER"						 			value="64" 		info="PROP_MAX_MASTER"/>
+		<enum name="PROP_MAX_PRES_VALUE"								value="65" 		info="PROP_MAX_PRES_VALUE"/>
+		<enum name="PROP_MINIMUM_OFF_TIME"								value="66" 		info="PROP_MINIMUM_OFF_TIME"/>
+		<enum name="PROP_MINIMUM_ON_TIME"								value="67" 		info="PROP_MINIMUM_ON_TIME"/>
+		<enum name="PROP_MINIMUM_OUTPUT"								value="68" 		info="PROP_MINIMUM_OUTPUT"/>
+		<enum name="PROP_MIN_PRES_VALUE"								value="69" 		info="PROP_MIN_PRES_VALUE"/>
+		<enum name="PROP_MODEL_NAME"						 			value="70" 		info="PROP_MODEL_NAME"/>
+		<enum name="PROP_MODIFICATION_DATE"								value="71" 		info="PROP_MODIFICATION_DATE"/>
+		<enum name="PROP_NOTIFY_TYPE"						 			value="72" 		info="PROP_NOTIFY_TYPE"/>
+		<enum name="PROP_NUMBER_OF_APDU_RETRIES"						value="73" 		info="PROP_NUMBER_OF_APDU_RETRIES"/>
+		<enum name="PROP_NUMBER_OF_STATES"								value="74" 		info="PROP_NUMBER_OF_STATES"/>
+		<enum name="PROP_OBJECT_IDENTIFIER"								value="75" 		info="PROP_OBJECT_IDENTIFIER"/>
+		<enum name="PROP_OBJECT_LIST"						 			value="76" 		info="PROP_OBJECT_LIST"/>
+		<enum name="PROP_OBJECT_NAME"						 			value="77" 		info="PROP_OBJECT_NAME"/>
+		<enum name="PROP_OBJECT_PROPERTY_REFERENCE"						value="78" 		info="PROP_OBJECT_PROPERTY_REFERENCE"/>
+		<enum name="PROP_OBJECT_TYPE"						 			value="79" 		info="PROP_OBJECT_TYPE"/>
+		<enum name="PROP_OPTIONAL"						 				value="80" 		info="PROP_OPTIONAL"/>
+		<enum name="PROP_OUT_OF_SERVICE"								value="81" 		info="PROP_OUT_OF_SERVICE"/>
+		<enum name="PROP_OUTPUT_UNITS"						 			value="82" 		info="PROP_OUTPUT_UNITS"/>
+		<enum name="PROP_EVENT_PARAMETERS"								value="83" 		info="PROP_EVENT_PARAMETERS"/>
+		<enum name="PROP_POLARITY"						 				value="84" 		info="PROP_POLARITY"/>
+		<enum name="PROP_PRESENT_VALUE"						 			value="85" 		info="PROP_PRESENT_VALUE"/>
+		<enum name="PROP_PRIORITY"						 				value="86" 		info="PROP_PRIORITY"/>
+		<enum name="PROP_PRIORITY_ARRAY"								value="87" 		info="PROP_PRIORITY_ARRAY"/>
+		<enum name="PROP_PRIORITY_FOR_WRITING"							value="88" 		info="PROP_PRIORITY_FOR_WRITING"/>
+		<enum name="PROP_PROCESS_IDENTIFIER"							value="89" 		info="PROP_PROCESS_IDENTIFIER"/>
+		<enum name="PROP_PROGRAM_CHANGE"								value="90" 		info="PROP_PROGRAM_CHANGE"/>
+		<enum name="PROP_PROGRAM_LOCATION"								value="91" 		info="PROP_PROGRAM_LOCATION"/>
+		<enum name="PROP_PROGRAM_STATE"						 			value="92" 		info="PROP_PROGRAM_STATE"/>
+		<enum name="PROP_PROPORTIONAL_CONSTANT"							value="93" 		info="PROP_PROPORTIONAL_CONSTANT"/>
+		<enum name="PROP_PROPORTIONAL_CONSTANT_UNITS"					value="94" 		info="PROP_PROPORTIONAL_CONSTANT_UNITS"/>
+		<enum name="PROP_PROTOCOL_CONFORMANCE_CLASS"					value="95" 		info="PROP_PROTOCOL_CONFORMANCE_CLASS"/>
+		<enum name="PROP_PROTOCOL_OBJECT_TYPES_SUPPORTED"				value="96" 		info="PROP_PROTOCOL_OBJECT_TYPES_SUPPORTED"/>
+		<enum name="PROP_PROTOCOL_SERVICES_SUPPORTED"					value="97" 		info="PROP_PROTOCOL_SERVICES_SUPPORTED"/>
+		<enum name="PROP_PROTOCOL_VERSION"								value="98" 		info="PROP_PROTOCOL_VERSION"/>
+		<enum name="PROP_READ_ONLY"						 				value="99" 		info="PROP_READ_ONLY"/>
+		<enum name="PROP_REASON_FOR_HALT"								value="100" 	info="PROP_REASON_FOR_HALT"/>
+		<enum name="PROP_RECIPIENT"						 				value="101" 	info="PROP_RECIPIENT"/>
+		<enum name="PROP_RECIPIENT_LIST"								value="102" 	info="PROP_RECIPIENT_LIST"/>
+		<enum name="PROP_RELIABILITY"						 			value="103" 	info="PROP_RELIABILITY"/>
+		<enum name="PROP_RELINQUISH_DEFAULT"							value="104" 	info="PROP_RELINQUISH_DEFAULT"/>
+		<enum name="PROP_REQUIRED"						 				value="105" 	info="PROP_REQUIRED"/>
+		<enum name="PROP_RESOLUTION"						 			value="106" 	info="PROP_RESOLUTION"/>
+		<enum name="PROP_SEGMENTATION_SUPPORTED"						value="107" 	info="PROP_SEGMENTATION_SUPPORTED"/>
+		<enum name="PROP_SETPOINT"						 				value="108" 	info="PROP_SETPOINT"/>
+		<enum name="PROP_SETPOINT_REFERENCE"							value="109" 	info="PROP_SETPOINT_REFERENCE"/>
+		<enum name="PROP_STATE_TEXT"						 			value="110" 	info="PROP_STATE_TEXT"/>
+		<enum name="PROP_STATUS_FLAGS"						 			value="111" 	info="PROP_STATUS_FLAGS"/>
+		<enum name="PROP_SYSTEM_STATUS"						 			value="112" 	info="PROP_SYSTEM_STATUS"/>
+		<enum name="PROP_TIME_DELAY"						 			value="113" 	info="PROP_TIME_DELAY"/>
+		<enum name="PROP_TIME_OF_ACTIVE_TIME_RESET"						value="114" 	info="PROP_TIME_OF_ACTIVE_TIME_RESET"/>
+		<enum name="PROP_TIME_OF_STATE_COUNT_RESET"						value="115" 	info="PROP_TIME_OF_STATE_COUNT_RESET"/>
+		<enum name="PROP_TIME_SYNCHRONIZATION_RECIPIENTS"				value="116" 	info="PROP_TIME_SYNCHRONIZATION_RECIPIENTS"/>
+		<enum name="PROP_UNITS"						 					value="117" 	info="PROP_UNITS"/>
+		<enum name="PROP_UPDATE_INTERVAL"								value="118" 	info="PROP_UPDATE_INTERVAL"/>
+		<enum name="PROP_UTC_OFFSET"						 			value="119" 	info="PROP_UTC_OFFSET"/>
+		<enum name="PROP_VENDOR_IDENTIFIER"								value="120" 	info="PROP_VENDOR_IDENTIFIER"/>
+		<enum name="PROP_VENDOR_NAME"						 			value="121" 	info="PROP_VENDOR_NAME"/>
+		<enum name="PROP_VT_CLASSES_SUPPORTED"							value="122" 	info="PROP_VT_CLASSES_SUPPORTED"/>
+		<enum name="PROP_WEEKLY_SCHEDULE"								value="123" 	info="PROP_WEEKLY_SCHEDULE"/>
+		<enum name="PROP_ATTEMPTED_SAMPLES"								value="124" 	info="PROP_ATTEMPTED_SAMPLES"/>
+		<enum name="PROP_AVERAGE_VALUE"						 			value="125" 	info="PROP_AVERAGE_VALUE"/>
+		<enum name="PROP_BUFFER_SIZE"						 			value="126" 	info="PROP_BUFFER_SIZE"/>
+		<enum name="PROP_CLIENT_COV_INCREMENT"							value="127" 	info="PROP_CLIENT_COV_INCREMENT"/>
+		<enum name="PROP_COV_RESUBSCRIPTION_INTERVAL"					value="128" 	info="PROP_COV_RESUBSCRIPTION_INTERVAL"/>
+		<enum name="PROP_CURRENT_NOTIFY_TIME"							value="129" 	info="PROP_CURRENT_NOTIFY_TIME"/>
+		<enum name="PROP_EVENT_TIME_STAMPS"								value="130" 	info="PROP_EVENT_TIME_STAMPS"/>
+		<enum name="PROP_LOG_BUFFER"						 			value="131" 	info="PROP_LOG_BUFFER"/>
+		<enum name="PROP_LOG_DEVICE_OBJECT_PROPERTY"					value="132" 	info="PROP_LOG_DEVICE_OBJECT_PROPERTY"/>
+		<enum name="PROP_ENABLE"						 				value="133" 	info="PROP_ENABLE"/>
+		<enum name="PROP_LOG_INTERVAL"						 			value="134" 	info="PROP_LOG_INTERVAL"/>
+		<enum name="PROP_MAXIMUM_VALUE"						 			value="135" 	info="PROP_MAXIMUM_VALUE"/>
+		<enum name="PROP_MINIMUM_VALUE"						 			value="136" 	info="PROP_MINIMUM_VALUE"/>
+		<enum name="PROP_NOTIFICATION_THRESHOLD"						value="137" 	info="PROP_NOTIFICATION_THRESHOLD"/>
+		<enum name="PROP_PREVIOUS_NOTIFY_TIME"							value="138" 	info="PROP_PREVIOUS_NOTIFY_TIME"/>
+		<enum name="PROP_PROTOCOL_REVISION"								value="139" 	info="PROP_PROTOCOL_REVISION"/>
+		<enum name="PROP_RECORDS_SINCE_NOTIFICATION"					value="140" 	info="PROP_RECORDS_SINCE_NOTIFICATION"/>
+		<enum name="PROP_RECORD_COUNT"						 			value="141" 	info="PROP_RECORD_COUNT"/>
+		<enum name="PROP_START_TIME"						 			value="142" 	info="PROP_START_TIME"/>
+		<enum name="PROP_STOP_TIME"						 				value="143" 	info="PROP_STOP_TIME"/>
+		<enum name="PROP_STOP_WHEN_FULL"								value="144" 	info="PROP_STOP_WHEN_FULL"/>
+		<enum name="PROP_TOTAL_RECORD_COUNT"							value="145" 	info="PROP_TOTAL_RECORD_COUNT"/>
+		<enum name="PROP_VALID_SAMPLES"						 			value="146" 	info="PROP_VALID_SAMPLES"/>
+		<enum name="PROP_WINDOW_INTERVAL"								value="147" 	info="PROP_WINDOW_INTERVAL"/>
+		<enum name="PROP_WINDOW_SAMPLES"								value="148" 	info="PROP_WINDOW_SAMPLES"/>
+		<enum name="PROP_MAXIMUM_VALUE_TIMESTAMP"						value="149" 	info="PROP_MAXIMUM_VALUE_TIMESTAMP"/>
+		<enum name="PROP_MINIMUM_VALUE_TIMESTAMP"						value="150" 	info="PROP_MINIMUM_VALUE_TIMESTAMP"/>
+		<enum name="PROP_VARIANCE_VALUE"								value="151" 	info="PROP_VARIANCE_VALUE"/>
+		<enum name="PROP_ACTIVE_COV_SUBSCRIPTIONS"						value="152" 	info="PROP_ACTIVE_COV_SUBSCRIPTIONS"/>
+		<enum name="PROP_BACKUP_FAILURE_TIMEOUT"						value="153" 	info="PROP_BACKUP_FAILURE_TIMEOUT"/>
+		<enum name="PROP_CONFIGURATION_FILES"							value="154" 	info="PROP_CONFIGURATION_FILES"/>
+		<enum name="PROP_DATABASE_REVISION"								value="155" 	info="PROP_DATABASE_REVISION"/>
+		<enum name="PROP_DIRECT_READING"								value="156" 	info="PROP_DIRECT_READING"/>
+		<enum name="PROP_LAST_RESTORE_TIME"								value="157" 	info="PROP_LAST_RESTORE_TIME"/>
+		<enum name="PROP_MAINTENANCE_REQUIRED"							value="158" 	info="PROP_MAINTENANCE_REQUIRED"/>
+		<enum name="PROP_MEMBER_OF"						 				value="159" 	info="PROP_MEMBER_OF"/>
+		<enum name="PROP_MODE"						 					value="160" 	info="PROP_MODE"/>
+		<enum name="PROP_OPERATION_EXPECTED"							value="161" 	info="PROP_OPERATION_EXPECTED"/>
+		<enum name="PROP_SETTING"						 				value="162" 	info="PROP_SETTING"/>
+		<enum name="PROP_SILENCED"						 				value="163" 	info="PROP_SILENCED"/>
+		<enum name="PROP_TRACKING_VALUE"								value="164" 	info="PROP_TRACKING_VALUE"/>
+		<enum name="PROP_ZONE_MEMBERS"						 			value="165" 	info="PROP_ZONE_MEMBERS"/>
+		<enum name="PROP_LIFE_SAFETY_ALARM_VALUES"						value="166" 	info="PROP_LIFE_SAFETY_ALARM_VALUES"/>
+		<enum name="PROP_MAX_SEGMENTS_ACCEPTED"							value="167" 	info="PROP_MAX_SEGMENTS_ACCEPTED"/>
+		<enum name="PROP_PROFILE_NAME"						 			value="168" 	info="PROP_PROFILE_NAME"/>
+		<enum name="PROP_AUTO_SLAVE_DISCOVERY"							value="169" 	info="PROP_AUTO_SLAVE_DISCOVERY"/>
+		<enum name="PROP_MANUAL_SLAVE_ADDRESS_BINDING"					value="170" 	info="PROP_MANUAL_SLAVE_ADDRESS_BINDING"/>
+		<enum name="PROP_SLAVE_ADDRESS_BINDING"							value="171" 	info="PROP_SLAVE_ADDRESS_BINDING"/>
+		<enum name="PROP_SLAVE_PROXY_ENABLE"							value="172" 	info="PROP_SLAVE_PROXY_ENABLE"/>
+		<enum name="PROP_LAST_NOTIFY_RECORD"							value="173" 	info="PROP_LAST_NOTIFY_RECORD"/>
+		<enum name="PROP_SCHEDULE_DEFAULT"								value="174" 	info="PROP_SCHEDULE_DEFAULT"/>
+		<enum name="PROP_ACCEPTED_MODES"								value="175" 	info="PROP_ACCEPTED_MODES"/>
+		<enum name="PROP_ADJUST_VALUE"						 			value="176" 	info="PROP_ADJUST_VALUE"/>
+		<enum name="PROP_COUNT"						 					value="177" 	info="PROP_COUNT"/>
+		<enum name="PROP_COUNT_BEFORE_CHANGE"							value="178" 	info="PROP_COUNT_BEFORE_CHANGE"/>
+		<enum name="PROP_COUNT_CHANGE_TIME"								value="179" 	info="PROP_COUNT_CHANGE_TIME"/>
+		<enum name="PROP_COV_PERIOD"						 			value="180" 	info="PROP_COV_PERIOD"/>
+		<enum name="PROP_INPUT_REFERENCE"								value="181" 	info="PROP_INPUT_REFERENCE"/>
+		<enum name="PROP_LIMIT_MONITORING_INTERVAL"						value="182" 	info="PROP_LIMIT_MONITORING_INTERVAL"/>
+		<enum name="PROP_LOGGING_OBJECT"								value="183" 	info="PROP_LOGGING_OBJECT"/>
+		<enum name="PROP_LOGGING_RECORD"								value="184" 	info="PROP_LOGGING_RECORD"/>
+		<enum name="PROP_PRESCALE"						 				value="185" 	info="PROP_PRESCALE"/>
+		<enum name="PROP_PULSE_RATE"						 			value="186" 	info="PROP_PULSE_RATE"/>
+		<enum name="PROP_SCALE"						 					value="187" 	info="PROP_SCALE"/>
+		<enum name="PROP_SCALE_FACTOR"						 			value="188" 	info="PROP_SCALE_FACTOR"/>
+		<enum name="PROP_UPDATE_TIME"						 			value="189" 	info="PROP_UPDATE_TIME"/>
+		<enum name="PROP_VALUE_BEFORE_CHANGE"							value="190" 	info="PROP_VALUE_BEFORE_CHANGE"/>
+		<enum name="PROP_VALUE_SET"						 				value="191" 	info="PROP_VALUE_SET"/>
+		<enum name="PROP_VALUE_CHANGE_TIME"								value="192" 	info="PROP_VALUE_CHANGE_TIME"/>
+		<enum name="PROP_ALIGN_INTERVALS"								value="193" 	info="PROP_ALIGN_INTERVALS"/>
+		<enum name="PROP_INTERVAL_OFFSET"								value="195" 	info="PROP_INTERVAL_OFFSET"/>
+		<enum name="PROP_LAST_RESTART_REASON"							value="196" 	info="PROP_LAST_RESTART_REASON"/>
+		<enum name="PROP_LOGGING_TYPE"						 			value="197" 	info="PROP_LOGGING_TYPE"/>
+		<enum name="PROP_RESTART_NOTIFICATION_RECIPIENTS"				value="202" 	info="PROP_RESTART_NOTIFICATION_RECIPIENTS"/>
+		<enum name="PROP_TIME_OF_DEVICE_RESTART"						value="203" 	info="PROP_TIME_OF_DEVICE_RESTART"/>
+		<enum name="PROP_TIME_SYNCHRONIZATION_INTERVAL"					value="204" 	info="PROP_TIME_SYNCHRONIZATION_INTERVAL"/>
+		<enum name="PROP_TRIGGER"						 				value="205" 	info="PROP_TRIGGER"/>
+		<enum name="PROP_UTC_TIME_SYNCHRONIZATION_RECIPIENTS"			value="206" 	info="PROP_UTC_TIME_SYNCHRONIZATION_RECIPIENTS"/>
+		<enum name="PROP_NODE_SUBTYPE"						 			value="207" 	info="PROP_NODE_SUBTYPE"/>
+		<enum name="PROP_NODE_TYPE"						 				value="208" 	info="PROP_NODE_TYPE"/>
+		<enum name="PROP_STRUCTURED_OBJECT_LIST"						value="209" 	info="PROP_STRUCTURED_OBJECT_LIST"/>
+		<enum name="PROP_SUBORDINATE_ANNOTATIONS"						value="210" 	info="PROP_SUBORDINATE_ANNOTATIONS"/>
+		<enum name="PROP_SUBORDINATE_LIST"								value="211" 	info="PROP_SUBORDINATE_LIST"/>
+		<enum name="PROP_ACTUAL_SHED_LEVEL"								value="212" 	info="PROP_ACTUAL_SHED_LEVEL"/>
+		<enum name="PROP_DUTY_WINDOW"						 			value="213" 	info="PROP_DUTY_WINDOW"/>
+		<enum name="PROP_EXPECTED_SHED_LEVEL"							value="214" 	info="PROP_EXPECTED_SHED_LEVEL"/>
+		<enum name="PROP_FULL_DUTY_BASELINE"							value="215" 	info="PROP_FULL_DUTY_BASELINE"/>
+		<enum name="PROP_REQUESTED_SHED_LEVEL"							value="218" 	info="PROP_REQUESTED_SHED_LEVEL"/>
+		<enum name="PROP_SHED_DURATION"						 			value="219" 	info="PROP_SHED_DURATION"/>
+		<enum name="PROP_SHED_LEVEL_DESCRIPTIONS"						value="220" 	info="PROP_SHED_LEVEL_DESCRIPTIONS"/>
+		<enum name="PROP_SHED_LEVELS"						 			value="221" 	info="PROP_SHED_LEVELS"/>
+		<enum name="PROP_STATE_DESCRIPTION"								value="222" 	info="PROP_STATE_DESCRIPTION"/>
+		<enum name="PROP_DOOR_ALARM_STATE"								value="226" 	info="PROP_DOOR_ALARM_STATE"/>
+		<enum name="PROP_DOOR_EXTENDED_PULSE_TIME"						value="227" 	info="PROP_DOOR_EXTENDED_PULSE_TIME"/>
+		<enum name="PROP_DOOR_MEMBERS"						 			value="228" 	info="PROP_DOOR_MEMBERS"/>
+		<enum name="PROP_DOOR_OPEN_TOO_LONG_TIME"						value="229" 	info="PROP_DOOR_OPEN_TOO_LONG_TIME"/>
+		<enum name="PROP_DOOR_PULSE_TIME"								value="230" 	info="PROP_DOOR_PULSE_TIME"/>
+		<enum name="PROP_DOOR_STATUS"						 			value="231" 	info="PROP_DOOR_STATUS"/>
+		<enum name="PROP_DOOR_UNLOCK_DELAY_TIME"						value="232" 	info="PROP_DOOR_UNLOCK_DELAY_TIME"/>
+		<enum name="PROP_LOCK_STATUS"						 			value="233" 	info="PROP_LOCK_STATUS"/>
+		<enum name="PROP_MASKED_ALARM_VALUES"							value="234" 	info="PROP_MASKED_ALARM_VALUES"/>
+		<enum name="PROP_SECURED_STATUS"								value="235" 	info="PROP_SECURED_STATUS"/>
+		<enum name="PROP_ABSENTEE_LIMIT"								value="244" 	info="PROP_ABSENTEE_LIMIT"/>
+		<enum name="PROP_ACCESS_ALARM_EVENTS"							value="245" 	info="PROP_ACCESS_ALARM_EVENTS"/>
+		<enum name="PROP_ACCESS_DOORS"						 			value="246" 	info="PROP_ACCESS_DOORS"/>
+		<enum name="PROP_ACCESS_EVENT"						 			value="247" 	info="PROP_ACCESS_EVENT"/>
+		<enum name="PROP_ACCESS_EVENT_AUTHENTICATION_FACTOR"			value="248" 	info="PROP_ACCESS_EVENT_AUTHENTICATION_FACTOR"/>
+		<enum name="PROP_ACCESS_EVENT_CREDENTIAL"						value="249" 	info="PROP_ACCESS_EVENT_CREDENTIAL"/>
+		<enum name="PROP_ACCESS_EVENT_TIME"								value="250" 	info="PROP_ACCESS_EVENT_TIME"/>
+		<enum name="PROP_ACCESS_TRANSACTION_EVENTS"						value="251" 	info="PROP_ACCESS_TRANSACTION_EVENTS"/>
+		<enum name="PROP_ACCOMPANIMENT"						 			value="252" 	info="PROP_ACCOMPANIMENT"/>
+		<enum name="PROP_ACCOMPANIMENT_TIME"							value="253" 	info="PROP_ACCOMPANIMENT_TIME"/>
+		<enum name="PROP_ACTIVATION_TIME"								value="254" 	info="PROP_ACTIVATION_TIME"/>
+		<enum name="PROP_ACTIVE_AUTHENTICATION_POLICY"					value="255" 	info="PROP_ACTIVE_AUTHENTICATION_POLICY"/>
+		<enum name="PROP_ASSIGNED_ACCESS_RIGHTS"						value="256" 	info="PROP_ASSIGNED_ACCESS_RIGHTS"/>
+		<enum name="PROP_AUTHENTICATION_FACTORS"						value="257" 	info="PROP_AUTHENTICATION_FACTORS"/>
+		<enum name="PROP_AUTHENTICATION_POLICY_LIST"					value="258" 	info="PROP_AUTHENTICATION_POLICY_LIST"/>
+		<enum name="PROP_AUTHENTICATION_POLICY_NAMES"					value="259" 	info="PROP_AUTHENTICATION_POLICY_NAMES"/>
+		<enum name="PROP_AUTHENTICATION_STATUS"							value="260" 	info="PROP_AUTHENTICATION_STATUS"/>
+		<enum name="PROP_AUTHORIZATION_MODE"							value="261" 	info="PROP_AUTHORIZATION_MODE"/>
+		<enum name="PROP_BELONGS_TO"						 			value="262" 	info="PROP_BELONGS_TO"/>
+		<enum name="PROP_CREDENTIAL_DISABLE"							value="263" 	info="PROP_CREDENTIAL_DISABLE"/>
+		<enum name="PROP_CREDENTIAL_STATUS"								value="264" 	info="PROP_CREDENTIAL_STATUS"/>
+		<enum name="PROP_CREDENTIALS"						 			value="265" 	info="PROP_CREDENTIALS"/>
+		<enum name="PROP_CREDENTIALS_IN_ZONE"							value="266" 	info="PROP_CREDENTIALS_IN_ZONE"/>
+		<enum name="PROP_DAYS_REMAINING"								value="267" 	info="PROP_DAYS_REMAINING"/>
+		<enum name="PROP_ENTRY_POINTS"						 			value="268" 	info="PROP_ENTRY_POINTS"/>
+		<enum name="PROP_EXIT_POINTS"						 			value="269" 	info="PROP_EXIT_POINTS"/>
+		<enum name="PROP_EXPIRATION_TIME"								value="270" 	info="PROP_EXPIRATION_TIME"/>
+		<enum name="PROP_EXTENDED_TIME_ENABLE"							value="271" 	info="PROP_EXTENDED_TIME_ENABLE"/>
+		<enum name="PROP_FAILED_ATTEMPT_EVENTS"							value="272" 	info="PROP_FAILED_ATTEMPT_EVENTS"/>
+		<enum name="PROP_FAILED_ATTEMPTS"								value="273" 	info="PROP_FAILED_ATTEMPTS"/>
+		<enum name="PROP_FAILED_ATTEMPTS_TIME"							value="274" 	info="PROP_FAILED_ATTEMPTS_TIME"/>
+		<enum name="PROP_LAST_ACCESS_EVENT"								value="275" 	info="PROP_LAST_ACCESS_EVENT"/>
+		<enum name="PROP_LAST_ACCESS_POINT"								value="276" 	info="PROP_LAST_ACCESS_POINT"/>
+		<enum name="PROP_LAST_CREDENTIAL_ADDED"							value="277" 	info="PROP_LAST_CREDENTIAL_ADDED"/>
+		<enum name="PROP_LAST_CREDENTIAL_ADDED_TIME"					value="278" 	info="PROP_LAST_CREDENTIAL_ADDED_TIME"/>
+		<enum name="PROP_LAST_CREDENTIAL_REMOVED"						value="279" 	info="PROP_LAST_CREDENTIAL_REMOVED"/>
+		<enum name="PROP_LAST_CREDENTIAL_REMOVED_TIME"					value="280" 	info="PROP_LAST_CREDENTIAL_REMOVED_TIME"/>
+		<enum name="PROP_LAST_USE_TIME"						 			value="281" 	info="PROP_LAST_USE_TIME"/>
+		<enum name="PROP_LOCKOUT"						 				value="282" 	info="PROP_LOCKOUT"/>
+		<enum name="PROP_LOCKOUT_RELINQUISH_TIME"						value="283" 	info="PROP_LOCKOUT_RELINQUISH_TIME"/>
+		<enum name="PROP_MASTER_EXEMPTION"								value="284" 	info="PROP_MASTER_EXEMPTION"/>
+		<enum name="PROP_MAX_FAILED_ATTEMPTS"							value="285" 	info="PROP_MAX_FAILED_ATTEMPTS"/>
+		<enum name="PROP_MEMBERS"						 				value="286" 	info="PROP_MEMBERS"/>
+		<enum name="PROP_MUSTER_POINT"						 			value="287" 	info="PROP_MUSTER_POINT"/>
+		<enum name="PROP_NEGATIVE_ACCESS_RULES"							value="288" 	info="PROP_NEGATIVE_ACCESS_RULES"/>
+		<enum name="PROP_NUMBER_OF_AUTHENTICATION_POLICIES"				value="289" 	info="PROP_NUMBER_OF_AUTHENTICATION_POLICIES"/>
+		<enum name="PROP_OCCUPANCY_COUNT"								value="290" 	info="PROP_OCCUPANCY_COUNT"/>
+		<enum name="PROP_OCCUPANCY_COUNT_ADJUST"						value="291" 	info="PROP_OCCUPANCY_COUNT_ADJUST"/>
+		<enum name="PROP_OCCUPANCY_COUNT_ENABLE"						value="292" 	info="PROP_OCCUPANCY_COUNT_ENABLE"/>
+		<enum name="PROP_OCCUPANCY_EXEMPTION"							value="293" 	info="PROP_OCCUPANCY_EXEMPTION"/>
+		<enum name="PROP_OCCUPANCY_LOWER_LIMIT"							value="294" 	info="PROP_OCCUPANCY_LOWER_LIMIT"/>
+		<enum name="PROP_OCCUPANCY_LOWER_LIMIT_ENFORCED"				value="295" 	info="PROP_OCCUPANCY_LOWER_LIMIT_ENFORCED"/>
+		<enum name="PROP_OCCUPANCY_STATE"								value="296" 	info="PROP_OCCUPANCY_STATE"/>
+		<enum name="PROP_OCCUPANCY_UPPER_LIMIT"							value="297" 	info="PROP_OCCUPANCY_UPPER_LIMIT"/>
+		<enum name="PROP_OCCUPANCY_UPPER_LIMIT_ENFORCED"				value="298" 	info="PROP_OCCUPANCY_UPPER_LIMIT_ENFORCED"/>
+		<enum name="PROP_PASSBACK_EXEMPTION"							value="299" 	info="PROP_PASSBACK_EXEMPTION"/>
+		<enum name="PROP_PASSBACK_MODE"						 			value="300" 	info="PROP_PASSBACK_MODE"/>
+		<enum name="PROP_PASSBACK_TIMEOUT"								value="301" 	info="PROP_PASSBACK_TIMEOUT"/>
+		<enum name="PROP_POSITIVE_ACCESS_RULES"							value="302" 	info="PROP_POSITIVE_ACCESS_RULES"/>
+		<enum name="PROP_REASON_FOR_DISABLE"							value="303" 	info="PROP_REASON_FOR_DISABLE"/>
+		<enum name="PROP_SUPPORTED_FORMATS"								value="304" 	info="PROP_SUPPORTED_FORMATS"/>
+		<enum name="PROP_SUPPORTED_FORMAT_CLASSES"						value="305" 	info="PROP_SUPPORTED_FORMAT_CLASSES"/>
+		<enum name="PROP_THREAT_AUTHORITY"								value="306" 	info="PROP_THREAT_AUTHORITY"/>
+		<enum name="PROP_THREAT_LEVEL"						 			value="307" 	info="PROP_THREAT_LEVEL"/>
+		<enum name="PROP_TRACE_FLAG"						 			value="308" 	info="PROP_TRACE_FLAG"/>
+		<enum name="PROP_TRANSACTION_NOTIFICATION_CLASS"				value="309" 	info="PROP_TRANSACTION_NOTIFICATION_CLASS"/>
+		<enum name="PROP_USER_EXTERNAL_IDENTIFIER"						value="310" 	info="PROP_USER_EXTERNAL_IDENTIFIER"/>
+		<enum name="PROP_USER_INFORMATION_REFERENCE"					value="311" 	info="PROP_USER_INFORMATION_REFERENCE"/>
+		<enum name="PROP_USER_NAME"						 				value="317" 	info="PROP_USER_NAME"/>
+		<enum name="PROP_USER_TYPE"						 				value="318" 	info="PROP_USER_TYPE"/>
+		<enum name="PROP_USES_REMAINING"								value="319" 	info="PROP_USES_REMAINING"/>
+		<enum name="PROP_ZONE_FROM"						 				value="320" 	info="PROP_ZONE_FROM"/>
+		<enum name="PROP_ZONE_TO"						 				value="321" 	info="PROP_ZONE_TO"/>
+		<enum name="PROP_ACCESS_EVENT_TAG"								value="322" 	info="PROP_ACCESS_EVENT_TAG"/>
+		<enum name="PROP_GLOBAL_IDENTIFIER"								value="323" 	info="PROP_GLOBAL_IDENTIFIER"/>
+		<enum name="PROP_VERIFICATION_TIME"								value="326" 	info="PROP_VERIFICATION_TIME"/>
+		<enum name="PROP_BASE_DEVICE_SECURITY_POLICY"					value="327" 	info="PROP_BASE_DEVICE_SECURITY_POLICY"/>
+		<enum name="PROP_DISTRIBUTION_KEY_REVISION"						value="328" 	info="PROP_DISTRIBUTION_KEY_REVISION"/>
+		<enum name="PROP_DO_NOT_HIDE"						 			value="329" 	info="PROP_DO_NOT_HIDE"/>
+		<enum name="PROP_KEY_SETS"						 				value="330" 	info="PROP_KEY_SETS"/>
+		<enum name="PROP_LAST_KEY_SERVER"								value="331" 	info="PROP_LAST_KEY_SERVER"/>
+		<enum name="PROP_NETWORK_ACCESS_SECURITY_POLICIES"				value="332" 	info="PROP_NETWORK_ACCESS_SECURITY_POLICIES"/>
+		<enum name="PROP_PACKET_REORDER_TIME"							value="333" 	info="PROP_PACKET_REORDER_TIME"/>
+		<enum name="PROP_SECURITY_PDU_TIMEOUT"							value="334" 	info="PROP_SECURITY_PDU_TIMEOUT"/>
+		<enum name="PROP_SECURITY_TIME_WINDOW"							value="335" 	info="PROP_SECURITY_TIME_WINDOW"/>
+		<enum name="PROP_SUPPORTED_SECURITY_ALGORITHM"					value="336" 	info="PROP_SUPPORTED_SECURITY_ALGORITHM"/>
+		<enum name="PROP_UPDATE_KEY_SET_TIMEOUT"						value="337" 	info="PROP_UPDATE_KEY_SET_TIMEOUT"/>
+		<enum name="PROP_BACKUP_AND_RESTORE_STATE"						value="338" 	info="PROP_BACKUP_AND_RESTORE_STATE"/>
+		<enum name="PROP_BACKUP_PREPARATION_TIME"						value="339" 	info="PROP_BACKUP_PREPARATION_TIME"/>
+		<enum name="PROP_RESTORE_COMPLETION_TIME"						value="340" 	info="PROP_RESTORE_COMPLETION_TIME"/>
+		<enum name="PROP_RESTORE_PREPARATION_TIME"						value="341" 	info="PROP_RESTORE_PREPARATION_TIME"/>
+		<enum name="PROP_BIT_MASK"						 				value="342" 	info="PROP_BIT_MASK"/>
+		<enum name="PROP_BIT_TEXT"						 				value="343" 	info="PROP_BIT_TEXT"/>
+		<enum name="PROP_IS_UTC"						 				value="344" 	info="PROP_IS_UTC"/>
+		<enum name="PROP_GROUP_MEMBERS"						 			value="345" 	info="PROP_GROUP_MEMBERS"/>
+		<enum name="PROP_GROUP_MEMBER_NAMES"							value="346" 	info="PROP_GROUP_MEMBER_NAMES"/>
+		<enum name="PROP_MEMBER_STATUS_FLAGS"							value="347" 	info="PROP_MEMBER_STATUS_FLAGS"/>
+		<enum name="PROP_REQUESTED_UPDATE_INTERVAL"						value="348" 	info="PROP_REQUESTED_UPDATE_INTERVAL"/>
+		<enum name="PROP_COVU_PERIOD"						 			value="349" 	info="PROP_COVU_PERIOD"/>
+		<enum name="PROP_COVU_RECIPIENTS"								value="350" 	info="PROP_COVU_RECIPIENTS"/>
+		<enum name="PROP_EVENT_MESSAGE_TEXTS"							value="351" 	info="PROP_EVENT_MESSAGE_TEXTS"/>
+		<enum name="PROP_EVENT_MESSAGE_TEXTS_CONFIG"					value="352" 	info="PROP_EVENT_MESSAGE_TEXTS_CONFIG"/>
+		<enum name="PROP_EVENT_DETECTION_ENABLE"						value="353" 	info="PROP_EVENT_DETECTION_ENABLE"/>
+		<enum name="PROP_EVENT_ALGORITHM_INHIBIT"						value="354" 	info="PROP_EVENT_ALGORITHM_INHIBIT"/>
+		<enum name="PROP_EVENT_ALGORITHM_INHIBIT_REF"					value="355" 	info="PROP_EVENT_ALGORITHM_INHIBIT_REF"/>
+		<enum name="PROP_TIME_DELAY_NORMAL"								value="356" 	info="PROP_TIME_DELAY_NORMAL"/>
+		<enum name="PROP_RELIABILITY_EVALUATION_INHIBIT"				value="357" 	info="PROP_RELIABILITY_EVALUATION_INHIBIT"/>
+		<enum name="PROP_FAULT_PARAMETERS"								value="358" 	info="PROP_FAULT_PARAMETERS"/>
+		<enum name="PROP_FAULT_TYPE"						 			value="359" 	info="PROP_FAULT_TYPE"/>
+		<enum name="PROP_LOCAL_FORWARDING_ONLY"							value="360" 	info="PROP_LOCAL_FORWARDING_ONLY"/>
+		<enum name="PROP_PROCESS_IDENTIFIER_FILTER"						value="361" 	info="PROP_PROCESS_IDENTIFIER_FILTER"/>
+		<enum name="PROP_SUBSCRIBED_RECIPIENTS"							value="362" 	info="PROP_SUBSCRIBED_RECIPIENTS"/>
+		<enum name="PROP_PORT_FILTER"						 			value="363" 	info="PROP_PORT_FILTER"/>
+		<enum name="PROP_AUTHORIZATION_EXEMPTIONS"						value="364" 	info="PROP_AUTHORIZATION_EXEMPTIONS"/>
+		<enum name="PROP_ALLOW_GROUP_DELAY_INHIBIT"						value="365" 	info="PROP_ALLOW_GROUP_DELAY_INHIBIT"/>
+		<enum name="PROP_CHANNEL_NUMBER"								value="366" 	info="PROP_CHANNEL_NUMBER"/>
+		<enum name="PROP_CONTROL_GROUPS"								value="367" 	info="PROP_CONTROL_GROUPS"/>
+		<enum name="PROP_EXECUTION_DELAY"								value="368" 	info="PROP_EXECUTION_DELAY"/>
+		<enum name="PROP_LAST_PRIORITY"						 			value="369" 	info="PROP_LAST_PRIORITY"/>
+		<enum name="PROP_WRITE_STATUS"						 			value="370" 	info="PROP_WRITE_STATUS"/>
+		<enum name="PROP_PROPERTY_LIST"						 			value="371" 	info="PROP_PROPERTY_LIST"/>
+		<enum name="PROP_SERIAL_NUMBER"						 			value="372" 	info="PROP_SERIAL_NUMBER"/>
+		<enum name="PROP_BLINK_WARN_ENABLE"								value="373" 	info="PROP_BLINK_WARN_ENABLE"/>
+		<enum name="PROP_DEFAULT_FADE_TIME"								value="374" 	info="PROP_DEFAULT_FADE_TIME"/>
+		<enum name="PROP_DEFAULT_RAMP_RATE"								value="375" 	info="PROP_DEFAULT_RAMP_RATE"/>
+		<enum name="PROP_DEFAULT_STEP_INCREMENT"						value="376" 	info="PROP_DEFAULT_STEP_INCREMENT"/>
+		<enum name="PROP_EGRESS_TIME"						 			value="377" 	info="PROP_EGRESS_TIME"/>
+		<enum name="PROP_IN_PROGRESS"						 			value="378" 	info="PROP_IN_PROGRESS"/>
+		<enum name="PROP_INSTANTANEOUS_POWER"							value="379" 	info="PROP_INSTANTANEOUS_POWER"/>
+		<enum name="PROP_LIGHTING_COMMAND"								value="380" 	info="PROP_LIGHTING_COMMAND"/>
+		<enum name="PROP_LIGHTING_COMMAND_DEFAULT_PRIORITY"				value="381" 	info="PROP_LIGHTING_COMMAND_DEFAULT_PRIORITY"/>
+		<enum name="PROP_MAX_ACTUAL_VALUE"								value="382" 	info="PROP_MAX_ACTUAL_VALUE"/>
+		<enum name="PROP_MIN_ACTUAL_VALUE"								value="383" 	info="PROP_MIN_ACTUAL_VALUE"/>
+		<enum name="PROP_POWER"						 					value="384" 	info="PROP_POWER"/>
+		<enum name="PROP_TRANSITION"						 			value="385" 	info="PROP_TRANSITION"/>
+		<enum name="PROP_EGRESS_ACTIVE"						 			value="386" 	info="PROP_EGRESS_ACTIVE"/>
+		<enum name="MAX_BACNET_PROPERTY_ID"								value="4194303" info="MAX_BACNET_PROPERTY_ID"/>		
+	  </member>
+	</typedef>
+	
+	<typedef name="nsapi_error"	size="4"	info="NSAPI Error Codes">
+		<member name="errCode"	type="int32_t"	offset="0"	info="NSAPI Error Codes">
+			<enum name="NSAPI_ERROR_OK"									value="0"		info=""/>
+			<enum name="NSAPI_ERROR_WOULD_BLOCK"						value="-3001"	info="No Error"/>
+			<enum name="NSAPI_ERROR_UNSUPPORTED"						value="-3002"	info="No Data is available but call is non-blocking"/>
+			<enum name="NSAPI_ERROR_PARAMETER"							value="-3003"	info="Unsupported functionality"/>
+			<enum name="NSAPI_ERROR_NO_CONNECTION"						value="-3004"	info="Invalid Configuration"/>
+			<enum name="NSAPI_ERROR_NO_SOCKET"							value="-3005"	info="Not connected to network"/>
+			<enum name="NSAPI_ERROR_NO_ADDRESS"							value="-3006"	info="Socket not available for use"/>
+			<enum name="NSAPI_ERROR_NO_MEMORY"							value="-3007"	info="IP Address is not known"/>
+			<enum name="NSAPI_ERROR_NO_SSID"							value="-3008"	info="Memory Resource not available"/>
+			<enum name="NSAPI_ERROR_DNS_FAILURE"						value="-3009"	info="SSID not foun"/>
+			<enum name="NSAPI_ERROR_DHCP_FAILURE"						value="-3010"	info="DNS failed to complete succesfully"/>
+			<enum name="NSAPI_ERROR_AUTH_FAILURE"						value="-3011"	info="DHCP failed to complete successfully"/>
+			<enum name="NSAPI_ERROR_DEVICE_ERROR"						value="-3012"	info="Connection to AcessPoint failed"/>
+			<enum name="NSAPI_ERROR_IN_PROGRESS"						value="-3013"	info="Failed interfacing with the network Processor"/>
+			<enum name="NSAPI_ERROR_ALREADY"							value="-3014"	info="Operation (e.g. connect) in Progress"/>
+			<enum name="NSAPI_ERROR_IS_CONNECTED"						value="-3015"	info="Operation (e.g. connect) already in progress"/>
+			<enum name="NSAPI_ERROR_CONNECTION_LOST"					value="-3016"	info="Socket already connected"/>
+			<enum name="NSAPI_ERROR_CONNECTION_TIMEOUT"					value="-3017"	info="Connection timed out"/>
+		</member>
+	</typedef>
+	
+  </typedefs>
+  
+  
+  <!-- Events for BACnet4mbed --> 
+  <events>
+	<group name="BACnet Init">
+	  <component name="BACnet Init"			brief="BACnet"		no="0xB6"	prefix="Bnet_Init_"		info="BACnet Initialisierung"/>
+	  <component name="BACnet Task"			brief="BACnet"		no="0xB3"	prefix="Task_"			info="BACnet Task Event"/>
+	  <component name="BACnet Thread"		brief="BACnet"		no="0xB4"	prefix="Thread_"		info="BACnet Thread"/>
+	  <component name="BACnet BIP Reinit"	biref="BACnet"		no="0xB9"	prefix="BIP_Reinit_"	info="BACnet BIP Reinit"/>
+	</group>
+  
+	<group name="BACnet Handler">
+	  <component name="H_NPDU"			brief="BACnet"		no="0xA9"	prefix="NPDU_"		info="NPDU Property Events"/>
+	  <component name="H_CoV"			brief="BACnet"		no="0xAA"	prefix="COV_"		info="CoV Property Events"/>
+	  <component name="H_uCoV"			brief="BACnet"		no="0xAB"	prefix="uCOV_"		info="Unconfirmed CoV Property Events"/>
+	  <component name="H_RPM"			brief="BACnet"		no="0xAC"	prefix="RPM_"		info="Read Property Multiple Events"/>
+	  <component name="H_RP"			brief="BACnet"		no="0xAD"	prefix="RP_"		info="Read Property Events"/>
+	  <component name="H_WhoIs"			brief="BACnet"		no="0xAE"	prefix="WIS_"		info="WhoIs Handler Events"/>		
+	  <component name="H_WP"			brief="BACnet"		no="0xAF"	prefix="WP_"		info="Write Property Events"/>
+	  <component name="SEND_PDU"		brief="BACnet"		no="0xB7"	prefix="SPDU_"		info="Sending BACnet PDU"/>
+	  <component name="BIP_RECV"		brief="BACnet"		no="0xB8"	prefix="BIP_RCV_"	info="BACnet IP Receiving PDU"/>
+	</group>
+	
+	<group name="BACnet UDP">
+	  <component name="BACnet UDPsock"	brief="BACnet"		no="0xB5"	prefix="UDPsock_"	info="BACnet UDPsocket"/>
+	</group>
+	
+    <group name="BACnet Threading">
+	  <component name="BACnet EVQ"		brief="BACnet"		no="0xB0"	prefix="EVQ_"		info="BACnet EventQueue"/>
+	  <component name="BACnet EVQ_RD"	brief="BACnet"		no="0xB1"	prefix="EVQ_RD_"	info="Object CB EventQueue"/>
+	  <component name="BACnet EVQ_WR"	brief="BACnet"		no="0xB2"	prefix="EVQ_WR_"	info="Object CB EventQueue"/>	  	  
+	</group>
+	
+<!--	<event id=""	level=""	property=""	value=""	info=""/>	-->
+	
+  <!--BACnet Handler-->
+    <!--BACnet Handler NPDU-->
+	<event id="0xA901"	level="Op"		property="BACNET_H_NPDU_RCVD"				value="bnetProtVer=%d[val1]"							info="BACnet Handler NPDU received"/>
+	<event id="0xA902"	level="Op"		property="BACNET_H_NPDU_CALLING_APDU_H"		value=""												info="BACnet calling NPDU Hanler"/>
+	<event id="0xA90E"	level="Error"	property="BACNET_H_NPDU_NET_MSG_DCARD"		value="destNetw=%d[val1]"								info="BACnet-Message discarded"/>
+	<event id="0xA90F"	level="Error"	property="BACNET_H_NPDU_BNETPROT_DCARD"		value="bnetProtVer=%d[val1]"							info="BACnet Protocol Message discarded"/>
+		
+	<!--BACnet Handler CoV-->
+	<event id="0xAA00"	level="Op"		property="BACNET_H_COV_RM_UNUSED_SUBSC"		value="ObjInst=%d[val1] | ObjType=%d[val2]"				info="BACnet Handler removing unused CoV-Subscriptions"/>
+	<event id="0xAA01"	level="Op"		property="BACNET_H_COV_ADD_COV_ADDR"		value=""												info="BACnet Handler adding CoV Subscription"/>
+	<event id="0xAA02"	level="Op"		property="BACNET_H_COV_ADD_COV_SUCCESS"		value="index=%d[val1]"									info="BACnet Handler added CoV Subscriber Address"/>
+	<event id="0xAA03"	level="Error"	property="BACNET_H_COV_ADD_COV_FAIL"		value=""												info="BACnet failed to add CoV subscriber Address"/>
+	<event id="0xAA04"	level="Op"		property="BACNET_H_COV_NOTIF_REQUEST"		value=""												info="BACnet CoV Notification request received"/>
+	<event id="0xAA05"	level="Error"	property="BACNET_H_COV_DEST_NOT_FOUND"		value=""												info="BACnet CoV Destination not found"/>																							<!--TBD-->
+	<event id="0xAA06"	level="Op"		property="BACNET_H_COV_NOTIF_SENT"			value=""												info="BACnet CoV Notification sent"/>																									<!--TBD-->
+	<event id="0xAA07"	level="Op"		property="BACNET_H_COV_NOTIF_SENDING"		value="ObjInst=%d[val2] | ObjType=%d[val1]"				info="BACnet sending CoV Notification"/>
+	<event id="0xAA08"	level="Op"		property="BACNET_H_COV_RCV_SEG_MSG_ABORT"	value=""												info="BACnet CoV Handler received segmented Message"/>
+	<event id="0xAA09"	level="Error"	property="BACNET_H_COV_REQ_DECODE_FAILED"	value=""												info="BACnet CoV-Reuest decode failed"/>
+	<event id="0xAA0A"	level="Error"	property="BACNET_H_COV_SENDING_ERROR"		value="%E[val1, BACNET_ERROR_CODE:errCode]"				info="BACnet CoV-Handler sending ERROR"/>
+	<event id="0xAA0B"	level="Error"	property="BACNET_H_COV_SENDING_ABORT"		value="%E[val1, BACNET_ERROR_CODE:errCode]"				info="BACnet CoV-Handler sending ABORT"/>
+	<event id="0xAA0C"	level="Error"	property="BACNET_H_COV_SENDING_REJECT"		value="%E[val1, BACNET_ERROR_CODE:errCode]"				info="BACnet CoV-Handler sending REJECT"/>
+	<event id="0xAA0D"	level="Op"		property="BACNET_H_COV_SENDING_SACK"		value=""												info="BACnet CoV-Handler sending SACK"/>
+	<event id="0xAA0E"	level="Op"		property="BACNET_H_COV_RESPONSE_SENT"		value="bytes_sent=%d[val1]"								info="BACnet CoV-Handler Resonse sent"/>
+	<event id="0xAA0F"	level="Error"	property="BACNET_H_COV_SENDING_FAILED"		value="errno=%d[val1]"									info="BACnet CoV-Handler sending failed"/>
+		
+	<!--BACnet Handler Unconfirmed COV-->
+	<event id="0xAB01"	level="Op"		property="BACNET_H_UCOV_RCVD_NOTIF"			value=""												info="BACnet received unconfirmed CoV Notification"/>														<!--TBD-->
+	<event id="0xAB02"	level="Op"		property="BACNET_H_UCOV_NOTIF_DECODED"		value="monObjInstance=%d[val1] | monObjType=%d[val2]"	info="BACnet unconfirmed Notification decoded"/>
+	<event id="0xAB03"	level="Error"	property="BACNET_H_UCOV_NOTIF_DECODE_FAIL"	value="monObjInstance=%d[val1] | monObjType=%d[val2]"	info="BACnet unconfirmed Notification decode failed"/>
+		
+	<!--BACnet Handler Read Property Multiple-->
+	<event id="0xAC01"	level="Op"		property="BACNET_H_RPM_RCVD_REQUEST"		value=""																info="BACnet RPM Reuest received"/>															<!--TBD-->
+	<event id="0xAC02"	level="Op"		property="BACNET_H_RPM_RCVD_SEG_MESSAGE"	value="BnetStatAbort=%d[val1] | %E[val2, BACNET_ERROR_CODE:errCode]"	info="BACnet received segmented RPM message"/>
+	<event id="0xAC03"	level="Error"	property="BACNET_H_RPM_BAD_RPM_ENCODING"	value="BnetStatAbort=%d[val1] | line=%d[val2]"							info="BACnet RPM message 'bad encoding' detected"/>
+	<event id="0xAC04"	level="Error"	property="BACNET_H_RPM_RESPONSE_TOO_BIG"	value="BnetStatAbort=%d[val1] | %E[val2, BACNET_ERROR_CODE:errCode]"	info="BACnet RPM response message too big / long"/>
+	<event id="0xAC05"	level="Error"	property="BACNET_H_RPM_ENC_FAIL_BUFF_FULL"	value="%E[val1, BACNET_ERROR_CODE:errCode] | line=%d[val2]"				info="BACnet RPM error encoding failed, not enough buffer"/>
+	<event id="0xAC06"	level="Error"	property="BACNET_H_RPM_MSG_TOO_LARGE"		value="%E[val1, BACNET_ERROR_CODE:errCode] | line=%d[val2]"				info="BACnet RPM message too big / long"/>
+	<event id="0xAC07"	level="Error"	property="BACNET_H_RPM_SENDING_ERROR"		value="%E[val1, BACNET_ERROR_CODE:errCode] | line=%d[val2]"				info="BACnet RPM Handler sending ERROR"/>   
+	<event id="0xAC08"	level="Error"	property="BACNET_H_RPM_SENDING_ABORT"		value="%E[val1, BACNET_ERROR_CODE:errCode] | line=%d[val2]"				info="BACnet RPM Handler sending ABORT"/>   
+	<event id="0xAC09"	level="Error"	property="BACNET_H_RPM_SENDING_REJECT"		value="%E[val1, BACNET_ERROR_CODE:errCode] | line=%d[val2]"				info="BACnet RPM Handler sending REJECT"/>
+	<event id="0xAC0A"	level="Op"		property="BACNET_H_RPM_RESPONSE_SENT"		value="bytes_sent=%d[val1]"												info="BACnet RPM Handler sent RPM respnse message"/>
+	<event id="0xAC0B"	level="Op"		property="BACNET_H_RPM_SENDING_FAILED"		value="errno=%d[val1]"													info="BACnet RPM Handler sending failed"/>
+		
+	<!--BACnet Handler Read Property-->
+	<event id="0xAD01"	level="Op"		property="BACNET_H_RP_RCVD_REQUEST"			value=""																					info="BACnet RP Handler received request"/>																						<!--TBD-->
+	<event id="0xAD02"	level="Op"		property="BACNET_H_RP_REQUEST_DECODED"		value="ObjType=%d[val1] | ObjInst=%d[val2]"													info="BACnet RP Handler decoded request"/>
+	<event id="0xAD03"	level="Op"		property="BACNET_H_RP_REQUEST_DECODE_FAIL" 	value="ObjType=%d[val1] | ObjInst=%d[val2]"													info="BACnet RP Handler failed to decode request"/>
+	<event id="0xAD04"	level="Op"		property="BACNET_H_RP_RCVD_SEG_MSG"			value=""																					info="BACnet RP Handler received segmented Request message"/>
+	<event id="0xAD05"	level="Op"		property="BACNET_H_RP_MSG_TOO_LARGE"		value="%E[val1, BACNET_ERROR_CODE:errCode]"													info="BACnet RP Handler message too big / long"/>
+	<event id="0xAD06"	level="Op"		property="BACNET_H_RP_SENDING_ACK"			value=""																					info="BACnet RP Handler sending ACK"/>
+	<event id="0xAD07"	level="Error"	property="BACNET_H_RP_SENDING_ABORT"		value="%E[val1, BACNET_ERROR_CODE:errCode]"													info="BACnet RP Handler sending ABORT"/>
+	<event id="0xAD08"	level="Error"	property="BACNET_H_RP_SENDING_ERROR"		value="%E[val1, BACNET_ERROR_CODE:errCode] | ObjProp=%E[val2, BACNET_OBJ_PROP:propCode]"	info="BACnet RP Handler sending ERROR"/>
+	<event id="0xAD09"	level="Error"	property="BACNET_H_RP_SENDING_REJECT"		value="%E[val1, BACNET_ERROR_CODE:errCode]"													info="BACnet RP Handler sending REJECT"/>
+	<event id="0xAD0A"	level="Error"	property="BACNET_H_RP_SENDING_FAILED"		value="%E[val2, BACNET_ERROR_CODE:errCode] | bytes_sent=%d[val1]"							info="BACnet RP Handler sending failed"/>
+	<event id="0xAD0F"	level="Error"	property="BACNET_H_RP_ERRNO"				value="%t[val1]"																			info="strerror(errno)"/>
+		
+	<!--BACnet Handler WhoIs-->
+	<event id="0xAE01"	level="Op"		property="BACNET_H_WIS_RCVD_REQUEST"		value=""							info="BACnet Handler received 'WhoIs' request"/>																																				<!--TBD-->
+	<event id="0xAE02"	level="Op"		property="BACNET_H_WIS_SENT_IAM"      		value=""							info="BACnet Handler sent 'I am' response"/>
+	<event id="0xAE03"	level="Op"		property="BACNET_H_WIS_SENT_UCAST_IAM"		value=""							info="BACnet Handler sent 'I am' UniCast"/>
+	
+	<!--BACnet Handler WP-->
+	<event id="0xAF01"	level="Op"		property="BACNET_H_WP_CALLED"				value="PDUlen=%d[val1]"													info="BACnet WP-Handler called"/>
+	<event id="0xAF02"	level="Op"		property="BACNET_H_WP_RCVD_REQ"				value="ReqLen=%d[val1]"													info="BACnet WP-Handler received request"/>
+	<event id="0xAF03"	level="Op"		property="BACNET_H_WP_CONF_SACK"			value="SACKlen=%d[val1] | %E[val2, BACNET_CONFIRMED_SERVICE:cServType]"	info="BACnet WP-Handler Confirm with SACK"/>		
+	<event id="0xAF04"	level="Op"		property="BACNET_H_WP_RCVD_SEG_MSG"			value="len=%d[val1] | %E[val2, BACNET_ABORT_REASON:reason]"		info="BACnet WP-Handler received segmented Message"/>
+	<event id="0xAF0D"	level="Error"	property="BACNET_H_WP_SEND_PDU_FAILED" 		value="bytes_sent=%d[val1]"												info="BACnet WP-Handler sending PDU failed response"/>
+	<event id="0xAF0E"	level="Error"	property="BACNET_H_WP_BAD_REQ"				value="APDUlen=%d[val1] | %E[val2, BACNET_ABORT_REASON:reason]"	info="BACnet WP-Handler 'bad request' detected"/>
+	<event id="0xAF0F"	level="Error"	property="BACNET_H_WP_RCV_FAILED"			value="APDUlen=%d[val1] | "												info="BACnet WP-Handler failed to receive request"/>
+	
+	<!--BACnet Send PDU-->
+	<event id="0xB700"	level="Op"		property="BACNET_SENDING_PDU"				value=""				info=""/>
+	<event id="0xB701"	level="Op"		property="BACNET_SENDING_PDU_BCAST"			value="addr=%t[val1]"	info=""/>
+	<event id="0xB702"	level="Op"		property="BACNET_SENDING_PDU_NW_BCAST"		value="adr=%t[val1]"	info=""/>
+	<event id="0xB703"	level="Op"		property="BACNET_SENDING_PDU_UCAST"			value="adr=%t[val1]"	info=""/>
+	<event id="0xB704"	level="Op"		property="BACNET_SENT_PDU"					value="sent=%d[val1]"	info=""/>
+	
+	<event id="0xB705"	level="Error"	property="BACNET_SENDING_PDU_FAILED"		value="%E[val1, nsapi_error:errode]"	info=""/>
+	<event id="0xB706"	level="Error"	property="BACNET_SEND_PDU_INVALID_ADDR"		value=""								info=""/>
+	
+	<!--BACnet BIP Receiving-->
+	<event id="0xB800"	level="Op"		property="BACNET_BIP_RECEIVING"					value="ip=%t[val1]"			info="Receiving BIP NPDU"/>
+	<event id="0xB801"	level="Op"		property="BACNET_BIP_LISTENED_TO_MYSELF"		value=""					info="NPDU was sent by myself"/>
+	<event id="0xB802"	level="Op"		property="BACNET_BIP_DECODING_BCAST_UCAST"		value=""					info="NPDU is Broad- Unicast Message"/>
+	<event id="0xB803"	level="Op"		property="BACNET_BIP_BCAST_UCAST_DECODED"		value=""					info="Broad- / Unicast NPDU decoded"/>
+	<event id="0xB804"	level="Error"	property="BACNET_BIP_BCAST_UCAST_PDU_TOO_LONG"	value="pdu_len=%d[val1]"	info="PDU in NPDU too long"/>
+	<event id="0xB805"	level="Op"		property="BACNET_BIP_RECEIVED_FWD_NPDU"			value=""					info="Receiving forwarded NPDU"/>
+	<event id="0xB806"	level="Op"		property="BACNET_BIP_FWD_NPDU_DECODED"			value=""					info="Forwarded NPDU decoded"/>
+	<event id="0xB807"	level="Error"	property="BACNET_BIP_FWD_PDU_TOO_LONG"			value="pdu_len=%d[val1]"	info="Forwarded NPDU too long"/>
+	<event id="0xB808"	level="Op"		property="BACNET_BIP_RECEIVED"					value=""					info="BIP NPDU received"/>
+	<event id="0xB809"	level="Op"		property="BACNET_BIP_RECEIVING_NON_BAC"			value=""					info="Received PAcket, but non BACNET"/>
+	
+	
+  <!--BACnet Threading-->
+	<!--EventQueue-->
+	<event id="0xB001"	level="Op"		property="BACNET_EVQ_STARTING"				value=""									info="Bindung der Eventqueu an BACnet CB Thread"/>
+	<event id="0xB002"	level="Op"		property="BACNET_EVQ_STARTED"				value="%E[val1, CMSIS_OS:osStatus]"			info="Start des BACnet CB Thread mit Bindung zu Eventqueue erfolgreich"/>
+	<event id="0xB003"	level="Error"	property="BACNET_EVQ_FAILED"				value="%E[val1, CMSIS_OS:osStatus]"			info="BACnet CB Thread start fehlerhaft"/>
+	
+	
+	<!--AnalogInput-->
+	<event id="0xB100"	level="Op"		property="BACNET_EVQ_AI_RDCB_CALLED"		value="id=%d[val1]"							info="AnalogInput ReadCB called"/>
+	<event id="0xB101"	level="Error"	property="BACNET_EVQ_AI_RDCB_FAILED"		value="id=%d[val1]"							info="AnalogInput ReadCB failed"/>
+	<event id="0xB200"	level="Op"		property="BACNET_EVQ_AI_WRCB_CALLED"		value="id=%d[val1]"							info="AnalogInput WriteCB called"/>
+	<event id="0xB201"	level="Error"	property="BACNET_EVQ_AI_WRCB_FAILED"		value="id=%d[val1]"							info="AnalogInput WriteCB failed"/>
+	<!--AnalogOutput-->
+	<event id="0xB102"	level="Op"		property="BACNET_EVQ_AO_RDCB_CALLED"		value="id=%d[val1]"							info="AnalogOutput ReadCB called"/>		
+	<event id="0xB103"	level="Error"	property="BACNET_EVQ_AO_RDCB_FAILED"		value="id=%d[val1]"							info="AnalogOutput ReadCB failed"/>
+	<event id="0xB202"	level="Op"		property="BACNET_EVQ_AO_WRCB_CALLED"		value="id=%d[val1]"							info="AnalogOutput WriteCB called"/>
+	<event id="0xB203"	level="Error"	property="BACNET_EVQ_AO_WRCB_FAILED"		value="id=%d[val1]"							info="AnalogOutput WriteCB failed"/>
+	
+	<event id="0xB20E"	level="Op"		property="BACNET_EVQ_AO_VAL_DECODED"		value="val=%d[val1] | len=%d[val2]"			info="AnalogOutput WriteCB Value decoded"/>
+	<event id="0xB20F"	level="Error"	property="BACNET_EVQ_AO_VAL_DECODE_FAIL"	value="len=%d[val1]"						info="AnalogOutput WriteCB Value decode fail"/>
+	
+	<!--AnalogValue-->
+	<event id="0xB104"	level="Op"		property="BACNET_EVQ_AV_RDCB_CALLED"		value="id=%d[val1]"						info="AnalogValue ReadCB called"/>		
+	<event id="0xB105"	level="Error"	property="BACNET_EVQ_AV_RDCB_FAILED"		value="id=%d[val1]"						info="AnalogValue ReadCB failed"/>
+	<event id="0xB204"	level="Op"		property="BACNET_EVQ_AV_WRCB_CALLED"		value="id=%d[val1]"						info="AnalogValue WriteCB called"/>
+	<event id="0xB205"	level="Error"	property="BACNET_EVQ_AV_WRCB_FAILED"		value="id=%d[val1]"						info="AnalogValue WriteCB failed"/>
+	<!--BinaryInput-->
+	<event id="0xB106"	level="Op"		property="BACNET_EVQ_BI_RDCB_CALLED"		value="id=%d[val1]"						info="BinatyInput ReadCB called"/>		
+	<event id="0xB107"	level="Error"	property="BACNET_EVQ_BI_RDCB_FAILED"		value="id=%d[val1]"						info="BinatyInput WriteCB failed"/>
+	<!--BinaryOutpu0t-->
+	<event id="0xB1008"	level="Op"		property="BACNET_EVQ_BO_RDCB_CALLED"		value="id=%d[val1]"						info="BinaryOutput ReadCB called"/>
+	<event id="0xB109"	level="Error"	property="BACNET_EVQ_BO_RDCB_FAILED"		value="id=%d[val1]"						info="BinaryOutput ReadCB failed"/>		
+	<event id="0xB206"	level="Op"		property="BACNET_EVQ_BO_WRCB_CALLED"		value="id=%d[val1]"						info="BinaryOutput WriteCB called"/>
+	<event id="0xB207"	level="Error"	property="BACNET_EVQ_BO_WRCB_FAILED"		value="id=%d[val1]"						info="BinaryOutput WriteCB failed"/>
+	<!--BinaryValue-->
+	<event id="0xB10A"	level="Op"		property="BACNET_EVQ_BO_RDCB_CALLED"		value="id=%d[val1]"						info="BinaryValue ReadCB called"/>
+	<event id="0xB10B"	level="Error"	property="BACNET_EVQ_BO_RDCB_FAILED"		value="id=%d[val1]"						info="BinaryValue ReadCB failed"/>		
+	<event id="0xB208"	level="Op"		property="BACNET_EVQ_BO_WRCB_CALLED"		value="id=%d[val1]"						info="BinaryValue WriteCB called"/>
+	<event id="0xB209"	level="Error"	property="BACNET_EVQ_BO_WRCB_FAILED"		value="id=%d[val1]"						info="BinaryValue WriteCB failed"/>
+	<!--MultiStateValue-->
+	<event id="0xB10C"	level="Op"		property="BACNET_EVQ_MSV_RDCB_CALLED"		value="id=%d[val1]"						info="MultiStateValue ReadCB called"/>
+	<event id="0xB10D"	level="Error"	property="BACNET_EVQ_MSV_RDCB_FAILED"		value="id=%d[val1]"						info="MultiStateValue ReadCB failed"/>		
+	<event id="0xB20A"	level="Op"		property="BACNET_EVQ_MSV_WRCB_CALLED"		value="id=%d[val1]"						info="MultiStateValue WriteCB called"/>
+	<event id="0xB20B"	level="Error"	property="BACNET_EVQ_MSV_WRCB_FAILED"		value="id=%d[val1]"						info="MultiStateValue WriteCB failed"/>
+	<!--DeviceObject-->
+	<event id="0xB10E"	level="Op"		property="BACNET_EVQ_DEVOBJ_RDCB_CALLED"	value="id=%d[val1]"						info="DeviceObject ReadCB called"/>
+	<event id="0xB10F"	level="Error"	property="BACNET_EVQ_DEVOBJ_RDCB_FAILED"	value="id=%d[val1]"						info="DeviceObject ReadCB failed"/>
+	<event id="0xB20C"	level="Op"		property="BACNET_EVQ_DEVOBJ_WRCB_CALLED"	value="id=%d[val1]"						info="DeviceObject WriteCB called"/>
+	<event id="0xB20D"	level="Error"	property="BACNET_EVQ_DEVOBJ_WRCB_FAILED"	value="id=%d[val1]"						info="DeviceObject WriteCB failed"/>
+	
+	
+	<!--BACnet Task-->
+	<event id="0xB301"	level="Op"		property="BACNET_PDU_RECEIVED"				value="PDUlen=%d[val1]"						info="BACnet PDU Received"/>
+	<event id="0xB302"	level="Op"		property="BACNET_SEND_I_AM_UCAST"			value="PDUlen=%d[val1]"						info="BACnet sending 'I am' UniCast"/>
+	<event id="0xB303"	level="Op"		property="BACNET_SENT_I_AM_UCAST"			value="bytes_sent=%d[val1]"					info="BACnet Sent 'I am' UniCast"/>
+	<event id="0xB304"	level="Op"		property="BACNET_SEND_I_AM_BCAST"			value="PDUlen=%d[val1]"						info="BACnet sending 'I am' BroadCast"/>
+	<event id="0xB305"	level="Op"		property="BACNET_SENT_I_AM_BCAST"			value="bytes_sent=%d[val1]"					info="BACnet Sent 'I am' BroadCast"/>
+	<event id="0xB306"	level="Op"		property="BACNET_PDU_TYPE_CONFIRMED"		value="%E[val1, BACNET_PDU_TYPE:pduType]"	info="BACnet PDU-Type confirmed"/>
+	<event id="0xB30D"	level="Error"	property="BACNET_FAILED_I_AM_UCAST"			value="PDUlen=%d[val1]"						info="BACnet 'I am' UniCast failed"/>
+	<event id="0xB30E"	level="Error"	property="BACNET_FAILED_I_AM_BCAST"			value="bytes_sent=%d[val1]"					info="BACnet 'I am' BroadCast failed"/>
+	<event id="0xB30F"	level="Error"	property="BACNET_PDU_TYPE_UNKNOWN"			value=""									info="BACnet PDU-Type unknown"/>
+	
+	<!--BACnet Thread -->
+	<event id="0xB401"	level="Op"		property="BACNET_TASK_STARTING"				value=""									info="BACnet Thread wird gestartet"/>
+	<event id="0xB402"	level="Op"		property="BACNET_TASK_STARTED" 				value="%E[val1, CMSIS_OS:osStatus]"			info="BACnet Thread wurde gestartet"/>
+	<event id="0xB403"	level="Error"	property="BACNET_TASK_FAILED"				value="%E[val1, CMSIS_OS:osStatus]"			info="BACnet Thread start fehlerhaft"/>
+	
+	<!--BACnet BIP Reinit-->
+	<event id="0xB900"	level="Op"		property="BACNET_BIP_REINIT"				value=""																			info=""/>
+	<event id="0xB901"	level="Op"		property="BACNET_BIP_REINIT_OK"				value=""																			info=""/>
+	<event id="0xB902"	level="Error"	property="BACNET_BIP_REINIT_FAILED"			value="sock_close=%E[val1, nsapi_error:errCode] | bip_init=%E[val2, BOOL:boolean]"	info=""/>
+	
+	
+	<!--BACnet UDP Socket-->
+	<event id="0xB500"	level="Op"		property="BACNET_UDP_SOCK_OPENED"			value="%E[val1, nsapi_error:errCode]"	info="BACnet UDP Socket opened"/>
+	<event id="0xB501"	level="Error"	property="BACNET_UDP_SOCK_FAILED"			value="%E[val1, nsapi_error:errCode]"	info="BACnet UDP Socket failed"/>
+	<event id="0xB502"	level="Op"		property="BACNET_UDP_SOCK_BOUND"			value="%E[val1, nsapi_error:errCode]"	info="BACnet UDP Socket bound to IF"/>
+	<event id="0xB503"	level="Error"	property="BACNET_UDP_SOCK_BIND_FAIL"		value="%E[val1, nsapi_error:errCode]"	info="BACnet UDP Socket binding failed"/>
+	
+	<!--BACnet Init-->
+	<event id="0xB600"	level="Op"		property="BACNET_INIT_ADDR_CONVERSION_OK"	value="%t[val1]"	info="BACnet Addrress-conversion OK"/>
+	<event id="0xB601"	level="Error"	property="BACNET_INIT_ADDR_CONVERSION_FAIL"	value="%t[val1]"	info="BACnet Addrress-conversion FAILED"/>
+	
+	
+  </events>
+</component_viewer>

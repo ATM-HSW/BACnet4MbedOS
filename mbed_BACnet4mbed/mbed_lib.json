@@ -1,0 +1,105 @@
+{
+	"name": "BACnet4mbed",
+	"config": {
+		"BACNET_VENDOR_IDENTIFIER": {
+			"help": "Numeric vendor identifier",
+			"macro_name": "BACNET_VENDOR_IDENTIFIER",
+			"value": 260
+		},
+		"BACNET_VENDOR_NAME": {
+			"help": "Character representation of vendor name",
+			"macro_name": "BACNET_VENDOR_NAME",
+			"value": "\"Hochschule Wismar / CEA\""
+		},
+		"BACNET_DEVICE_DESCRIPTION": {
+			"help": "Charcter representation of device description",
+			"macro_name": "BACNET_DEVICE_DESCRIPTION",
+			"value": "\"Description\"" 
+		},
+		"BACNET_MODEL_NAME": {
+			"help": "Character representation of device or model name",
+			"macro_name": "BACNET_MODEL_NAME",
+			"value": "\"BACnet Device\""
+		},
+		"BACNET_LOCATION": {
+			"help": "Character representation of geographical location",
+			"macro_name": "BACNET_LOCATION",
+			"value": "\"DE\""
+		},
+		"BACNET_APPLICATION_VER": {
+			"help": "Character representation of application version",
+			"macro_name": "BACNET_APPLICATION_VER",
+			"value": "\"1.0\""
+		},
+		"BACNET_COV_HANDLER_UPDATE_INTERVAL": {
+			"help": "Interval at which the Stack will check subscribed Objects",
+			"macro_name": "BACNET_COV_HANDLER_UPDATE_INTERVAL",
+			"value": "((float)1.0)"
+		},
+		"BACAPP_BIT_STRING": {
+			"help": "Enables the BACnetStack BIT_STRING compatibility",
+			"macro_name": "BACAPP_BIT_STRING",
+			"value": ""
+		},
+		"BACAPP_BOOLEAN": {
+			"help": "Enables the BACnetStack BOOLEAN compatibility",
+			"macro_name": "BACAPP_BOOLEAN",
+			"value": ""
+		},
+		"BACAPP_CHARACTER_STRING": {
+			"help": "Enables the BACnetStack CHARACTER_STRING compatibility",
+			"macro_name": "BACAPP_CHARACTER_STRING",
+			"value": ""
+		},
+		"BACAPP_DOUBLE": {
+			"help": "Enables the BACnetStack DOUBLE compatibility",
+			"macro_name": "BACAPP_DOUBLE",
+			"value": ""
+		},
+		"BACAPP_ENUMERATED": {
+			"help": "Enables the BACnetStack ENUMERATED compatibility",
+			"macro_name": "BACAPP_ENUMERATED",
+			"value": ""
+		},
+		"BACAPP_OBJECT_ID": {
+			"help": "Enables the BACnetStack OBJECT_ID compatibility",
+			"macro_name": "BACAPP_OBJECT_ID",
+			"value": ""
+		},
+		"BACAPP_REAL": {
+			"help": "Enables the BACnetStack REAL compatibility",
+			"macro_name": "BACAPP_REAL",
+			"value": ""
+		},
+		"BACAPP_UNSIGNED": {
+			"help": "Enables the BACnetStack UNSIGNED compatibility",
+			"macro_name": "BACAPP_UNSIGNED",
+			"value": ""
+		},
+		"MAX_COV_SUBCRIPTIONS": {
+			"help": "Describes the max number of concurrent CoV Subscriptions",
+			"macro_name": "MAX_COV_SUBCRIPTIONS",
+			"value": 32
+		},
+		"MAX_TSM_TRANSACTIONS": {
+			"help": "Describes the max number of concurrent TSM transactions",
+			"macro_name": "MAX_TSM_TRANSACTIONS",
+			"value": 0
+		},
+    "BACDL_BIP": {
+			"help": "Configures the BACnet Stack to use BACnet/IP as datalink",
+			"macro_name": "BACDL_BIP",
+			"value": ""
+		},
+		"BACNET_THREAD_PRIORITY": {
+			"help": "Priority to be applied to automatically generated default thread if no thread provided during init",
+			"macro_name": "BACNET_THREAD_PRIORITY",
+			"value": "osPriorityAboveNormal"
+		},
+		"BACNET_THREAD_SIZE": {
+			"help": "Default thread size in Bytes of automatically generated default thread during init",
+			"macro_name": "BACNET_THREAD_SIZE",
+			"value": "8000"
+		}
+	}
+}

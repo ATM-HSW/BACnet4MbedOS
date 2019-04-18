@@ -1,0 +1,14 @@
+################
+# Ignore Folders
+################
+_vs17
+_vs17/*
+
+BUILD
+BUILD/*
+
+DebugConfig
+DebugConfig/*
+
+_fileUtilities
+_fileUtilities/*

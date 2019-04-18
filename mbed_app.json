@@ -1,0 +1,15 @@
+{
+	"macros": ["LENGTH(a)=(sizeof(a)/sizeof(a[0]))"],
+  "target_overrides": {
+    "*": {
+      "lwip.tcp-enabled": 0,
+      "platform.stdio-baud-rate": 115200,
+      "platform.default-serial-baud-rate": 115200,
+      "platform.stack-stats-enabled": true,
+      "platform.heap-stats-enabled": true,
+      "platform.cpu-stats-enabled": true,
+      "platform.thread-stats-enabled": true,
+      "platform.sys-stats-enabled": true
+    }
+  }
+}
